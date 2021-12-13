@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 
+import {tirages as defaultTirages} from "./data/tirages";
 import Tirages from "./Tirages";
 import Stats from "./Stats";
 
@@ -52,7 +53,6 @@ const App = () => {
   if (localStorage.getItem("tirages")) {
     try {
       savedTirages = JSON.parse(localStorage.getItem("tirages")).sort((a, b) => b.date.localeCompare(a.date));
-      localStorage.setItem("tirages", JSON.stringify(savedTirages));
       if (!(savedTirages instanceof Array)) {
         savedTirages  = [];
       }
@@ -60,6 +60,10 @@ const App = () => {
       savedTirages = [];
     }
   }
+  if (!savedTirages.length) {
+    savedTirages = defaultTirages;
+  }
+  localStorage.setItem("tirages", JSON.stringify(savedTirages));
 
   const [view, setView] = useState("TIRAGES");
   const [tirages, setTirages] = useState(savedTirages);
