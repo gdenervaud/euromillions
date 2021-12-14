@@ -210,7 +210,7 @@ const Tirage = ({ tirage, isNew, onChange, onDelete }) => {
         <input className={`form-check-input ${classes.date}`} type="date" value={tirage.date} onChange={e => handleDateChange(e.target.value)} readOnly={!editable} />
         {editable &&
           <>
-            <button className={classes.deleteBtn} type="button" onClick={handleSetDeletable}><FontAwesomeIcon icon="times" title="supprimer le tirage" /></button>
+            <button className={classes.deleteBtn} type="button" onClick={handleSetDeletable}><FontAwesomeIcon icon="trash-alt" title="supprimer le tirage" /></button>
             <button className={`btn btn-danger ${classes.confirmDeleteBtn} ${deleteable?"active":""}`} type="button" onClick={onDelete}><FontAwesomeIcon icon="trash-alt" title="supprimer le tirage" /> Supprimer</button>
           </>
         }

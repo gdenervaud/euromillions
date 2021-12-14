@@ -1,19 +1,5 @@
 export const tirages = [
   {
-    "date": "2022-12-07",
-    "numbers": [
-      22,
-      31,
-      38,
-      46,
-      47
-    ],
-    "stars": [
-      11,
-      7
-    ]
-  },
-  {
     "date": "2021-12-10",
     "numbers": [
       11,
@@ -25,6 +11,20 @@ export const tirages = [
     "stars": [
       2,
       8
+    ]
+  },
+  {
+    "date": "2021-12-07",
+    "numbers": [
+      22,
+      31,
+      38,
+      46,
+      47
+    ],
+    "stars": [
+      11,
+      7
     ]
   },
   {
@@ -383,6 +383,7 @@ export const tirages = [
       19,
       35,
       42,
+      43,
       7
     ],
     "stars": [
