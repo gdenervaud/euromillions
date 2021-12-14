@@ -83,9 +83,10 @@ const useStyles = createUseStyles({
   },
   deleteBtn: {
     position: "absolute",
-    top: "-1px",
+    top: "-5px",
     right: "5px",
     margin: 0,
+    padding: "0.375rem 0.75rem",
     border: 0,
     background: "transparent",
     fontSize: "x-large",
@@ -94,7 +95,8 @@ const useStyles = createUseStyles({
     },
     "@media screen and (min-width:1024px)": {
       top: "-15px",
-      right: "-10px"
+      right: "-10px",
+      padding: "1px 6px"
     }
   },
   confirmDeleteBtn: {
