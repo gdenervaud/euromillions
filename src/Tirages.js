@@ -15,11 +15,17 @@ const useStyles = createUseStyles({
     gridTemplateColumns: "1fr"
   },
   header: {
-    padding: "20px"
+    padding: "20px",
+    "& > button": {
+      padding: "0.65rem 0.75rem",
+      "@media screen and (min-width:1024px)": {
+        padding: "0.375rem 0.75rem",
+      }
+    }
   },
   tirages: {
     padding: "0 20px 20px 20px",
-    "& ul": {
+    "& > ul": {
       listStyleType: "none",
       margin: 0,
       padding: 0,
@@ -35,12 +41,12 @@ const useStyles = createUseStyles({
     position: "relative",
     width: "100% ",
     height: "100%",
-    padding: "10px",
+    padding: "10px 5px",
     border: "1px solid #dee2e6",
     borderRadius: "4px",
     background: "linear-gradient( 0deg,#f8f8f8,#fff)",
     overflow: "hidden",
-    "@media screen and (min-width:800px)": {
+    "@media screen and (min-width:1024px)": {
       padding: "20px"
     }
   },
@@ -77,8 +83,8 @@ const useStyles = createUseStyles({
   },
   deleteBtn: {
     position: "absolute",
-    top: "-2px",
-    right: "2px",
+    top: "-1px",
+    right: "5px",
     margin: 0,
     border: 0,
     background: "transparent",
@@ -86,22 +92,24 @@ const useStyles = createUseStyles({
     "&:hover": {
       boxShadow: "1px 1px 2px #8f8a8a"
     },
-    "@media screen and (min-width:800px)": {
+    "@media screen and (min-width:1024px)": {
       top: "-15px",
       right: "-10px"
     }
   },
   confirmDeleteBtn: {
     position: "absolute",
-    top: 0,
+    top: "-3px",
     right: "-130px",
+    padding: "0.65rem 0.75rem",
     transition: "right 0.3s ease-in-out",
     "&.active": {
       right: 0
     },
-    "@media screen and (min-width:800px)": {
+    "@media screen and (min-width:1024px)": {
       top: "-10px",
       right: "-140px",
+      padding: "0.375rem 0.75rem",
       "&.active": {
         right: "-10px"
       }
@@ -132,6 +140,7 @@ const useStyles = createUseStyles({
     }
   },
   stars: {
+    paddingTop: "5px",
     "& > ul": {
       listStyleType: "none",
       padding: 0,

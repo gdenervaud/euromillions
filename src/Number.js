@@ -18,16 +18,16 @@ const useStyles = createUseStyles({
   },
   value: {
     display: "inline-block",
-    margin: "5px",
-    fontSize: "16px",
+    margin: "6px",
+    fontSize: "20px",
     fontWeight: "bold",
-    verticalAlign: "text-bottom"
+    verticalAlign: "middle"
   },
   number: {
     position: "relative",
-    height: "35px",
-    width: "35px",
-    lineHeight: "35px",
+    height: "50px",
+    width: "50px",
+    lineHeight: "50px",
     borderRadius: "50%",
     backgroundColor: "white",
     color: "#001367",
@@ -40,15 +40,15 @@ const useStyles = createUseStyles({
   },
   star: {
     position: "relative",
-    height: "35px",
-    width: "35px",
-    lineHeight: "35px",
+    height: "50px",
+    width: "50px",
+    lineHeight: "50px",
     "& svg": {
       position: "absolute",
       top: 0,
       left: "50%",
       color: "white",
-      transform: "translateX(-50%) scale(1.2)"
+      transform: "translate(-50%, 3px) scale(1.2)"
     },
     "& div": {
       position: "absolute",
