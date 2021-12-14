@@ -7,6 +7,25 @@ import {tirages as defaultTirages} from "./data/tirages";
 import Tirages from "./Tirages";
 import Stats from "./Stats";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDpeHiDEKPpY0chqTUR4ywSOdKv89UEbfw",
+  authDomain: "euromillions-stats.firebaseapp.com",
+  projectId: "euromillions-stats",
+  storageBucket: "euromillions-stats.appspot.com",
+  messagingSenderId: "927975251473",
+  appId: "1:927975251473:web:2dc5c9e4c9a9d74a831bb0"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+console.log(app);
+
 const useStyles = createUseStyles({
   container: {
     width: "100% ",
