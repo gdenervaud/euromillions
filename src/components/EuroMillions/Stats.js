@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { Value, Number, Star } from "./Number";
+import { Value } from "../Number";
+import { Number, Star } from "./Draw";
 
 const useStyles = createUseStyles({
   container: {
@@ -94,13 +95,13 @@ const useStyles = createUseStyles({
   }
 });
 
-const Stats = ({ tirages }) => {
+export const Stats = ({ draws }) => {
 
   const [date, setDate] = useState("");
 
   const classes = useStyles();
 
-  const dates = tirages.reduce((acc, tirage, index) => {
+  const dates = draws.reduce((acc, tirage, index) => {
     acc.push({
       name: `depuis ${index > 0?"les " + (index + 1) + " derniers tirages":"le dernier tirage"} (${new Date(tirage.date).toLocaleDateString()})`,
       value: tirage.date
@@ -119,7 +120,7 @@ const Stats = ({ tirages }) => {
     acc.set(index, 0);
     return acc;
   }, new Map());
-  tirages.filter(tirage => tirage.date >= date).forEach(tirage => {
+  draws.filter(tirage => tirage.date >= date).forEach(tirage => {
     tirage.numbers.forEach(number => numbers.set(number, numbers.get(number) + 1));
     tirage.stars.forEach(star => stars.set(star, stars.get(star) + 1));
   });

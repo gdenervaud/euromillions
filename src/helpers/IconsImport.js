@@ -6,6 +6,7 @@ import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faStar} from "@fortawesome/free-solid-svg-icons/faStar";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
+import {faUndoAlt} from "@fortawesome/free-solid-svg-icons/faUndoAlt";
 
 library.add(
   faTimes,
@@ -13,5 +14,6 @@ library.add(
   faCheck,
   faPlus,
   faStar,
-  faTrashAlt
+  faTrashAlt,
+  faUndoAlt
 );
