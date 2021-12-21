@@ -11,9 +11,13 @@ const useStyles = createUseStyles({
     background: "transparent",
     userSelect: "none",
     outline: 0,
+    transition: "all 0.3s ease-in-out",
     "-webkit-tap-highlight-color": "transparent",
-    "& $number:hover": {
-      boxShadow: "1px 1px 2px #8f8a8a"
+    "&:hover": {
+      transform: "scale(1.2)",
+      "& $number": {
+        boxShadow: "1px 1px 2px #8f8a8a"
+      }
     }
   },
   value: {
@@ -91,21 +95,21 @@ export const Value = ({ value, checked, readOnly, Component, onClick }) => {
   );
 };
 
-export const Number = ({ value, checked}) => {
+export const Number = ({ value, checked, className}) => {
 
   const classes = useStyles();
 
   return (
-    <div className={`${classes.number} ${checked?" checked":""}`}>{value}</div>
+    <div className={`${classes.number} ${className?className:""} ${checked?" checked":""}`}>{value}</div>
   );
 };
 
-export const Star = ({ value, checked }) => {
+export const Star = ({ value, checked, className }) => {
 
   const classes = useStyles();
 
   return (
-    <div className={`${classes.star} ${checked?" checked":""}`}>
+    <div className={`${classes.star} ${className?className:""} ${checked?" checked":""}`}>
       <FontAwesomeIcon icon="star" size="2x"/>
       <div>{value}</div>
     </div>

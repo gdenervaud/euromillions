@@ -1,20 +1,20 @@
 import React from "react";
 
 import { Stats as StatsComponent } from "../Stats";
-import { Number, Star } from "./Draw";
+import { Number, Chance } from "./Draw";
 
 export const Stats = ({ draws }) => {
 
   const series = [
     {
-      maxValue: 50,
+      maxValue: 42,
       itemComponent: Number,
       getValue: draw => [...draw.numbers]
     },
     {
-      maxValue: 12,
-      itemComponent: Star,
-      getValue: draw => [...draw.stars]
+      maxValue: 6,
+      itemComponent: Chance,
+      getValue: draw => [draw.chance]
     }
   ];
 

@@ -8,10 +8,10 @@ import { Stats } from "./Stats";
 
 import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
 import { toDateString } from "../../helpers/DrawHelper";
-import { EuroMillionsDraw, euroMillionsDrawConverter } from "../../helpers/EuroMillionsDrawHelper";
-// import { draws as defaultDraws } from "../../data/euroMillionsDraws";
+import { SwissLottoDraw, swissLottoDrawConverter } from "../../helpers/SwissLottoDrawHelper";
+// import { draws as defaultDraws } from "../../data/swissLottoDraws";
 
-const EuroMillions = ({ db, dbCollection, onMenu }) => {
+const SwissLotto = ({ db, dbCollection, onMenu }) => {
 
   const [draws, setDraws] = useState([]);
   const [view, setView] = useState("DRAWS");
@@ -33,10 +33,10 @@ const EuroMillions = ({ db, dbCollection, onMenu }) => {
 
     // defaultTirages.forEach(tirage => {
     //   const draw = new EuroMillionsDraw(_.uuid(), tirage.date, tirage.numbers, tirage.stars, null);
-    //   saveDbItem(db, dbCollection, draw, euroMillionsDrawConverter);
+    //   saveDbItem(db, dbCollection, draw, swissLottoDrawConverter);
     // });
 
-    getDbList(db, dbCollection, euroMillionsDrawConverter, "date", false).then(result => {
+    getDbList(db, dbCollection, swissLottoDrawConverter, "date", false).then(result => {
       setDraws(result);
       // console.log(JSON.stringify(result.map(d => {
       //   const c = {...d};
@@ -47,11 +47,11 @@ const EuroMillions = ({ db, dbCollection, onMenu }) => {
   }, [db, dbCollection]);
 
   const onAddDraw = () => {
-    const draw = new EuroMillionsDraw(_.uuid(), toDateString(new Date()), [], [], null);
+    const draw = new SwissLottoDraw(_.uuid(), toDateString(new Date()), [], null, null);
     setDraws(draws => [draw, ...draws]);
   };
   const onSaveDraw = async draw => {
-    await saveDbItem(db, dbCollection, draw, euroMillionsDrawConverter);
+    await saveDbItem(db, dbCollection, draw, swissLottoDrawConverter);
     setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
   };
   const onDeleteDraw = draw => {
@@ -62,7 +62,7 @@ const EuroMillions = ({ db, dbCollection, onMenu }) => {
   };
 
   return (
-    <Tabs title="Euro Millions" logo="/euroMillions.jpg" tabs={tabs} selected={view} onClick={setView} onMenu={onMenu} >
+    <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} onMenu={onMenu} >
       {view !== "STATS"?
         <Draws draws={draws} DrawComponent={Draw} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
         :
@@ -73,4 +73,4 @@ const EuroMillions = ({ db, dbCollection, onMenu }) => {
 };
 
 
-export default EuroMillions;
+export default SwissLotto;

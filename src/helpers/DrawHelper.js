@@ -16,3 +16,43 @@ export const getUpdatedList = (list, number, add) => {
   result.sort();
   return result;
 };
+
+export const getValuesByCount = (maxValue, draws, date, getDrawValues) => {
+
+  const values = Array.from(Array(maxValue)).map((_, index) => index+1).reduce((acc,index) => {
+    acc.set(index, 0);
+    return acc;
+  }, new Map());
+
+  draws.filter(draw => draw.date >= date).forEach(draw => {
+    const vals = getDrawValues(draw);
+    vals.forEach(value => values.set(value, values.get(value) + 1));
+  });
+
+  const result = Object.entries(Array.from(values).reduce((acc, [value, counter]) => {
+    if (!acc[counter]) {
+      acc[counter] = [];
+    }
+    const list = [...acc[counter], value];
+    list.sort((valueA, valueB) => {
+      if (valueA > valueB) {
+        return 1;
+      }
+      if (valueB > valueA) {
+        return -1;
+      }
+      return 0;
+    });
+    acc[counter] = list;
+    return acc;
+  }, {})).sort(([counterA], [counterB]) => {
+    if (counterA > counterB) {
+      return -1;
+    }
+    if (counterB > counterA) {
+      return 1;
+    }
+    return 0;
+  });
+  return result;
+};

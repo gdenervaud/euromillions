@@ -90,6 +90,7 @@ const useStyles = createUseStyles({
     border: 0,
     background: "transparent",
     fontSize: "x-large",
+    color: "#454545",
     "&:hover": {
       boxShadow: "1px 1px 2px #8f8a8a"
     },
@@ -125,6 +126,7 @@ const useStyles = createUseStyles({
     border: 0,
     background: "transparent",
     fontSize: "x-large",
+    color: "#454545",
     "&.active": {
       color: "#28a745"
     },
