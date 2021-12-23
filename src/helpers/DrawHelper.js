@@ -29,11 +29,11 @@ export const getValuesByCount = (maxValue, draws, date, getDrawValues) => {
     vals.forEach(value => values.set(value, values.get(value) + 1));
   });
 
-  const result = Object.entries(Array.from(values).reduce((acc, [value, counter]) => {
-    if (!acc[counter]) {
-      acc[counter] = [];
+  const result = Array.from(Array.from(values).reduce((acc, [value, counter]) => {
+    if (!acc.has(counter)) {
+      acc.set(counter, []);
     }
-    const list = [...acc[counter], value];
+    const list = [...(acc.get(counter)), value];
     list.sort((valueA, valueB) => {
       if (valueA > valueB) {
         return 1;
@@ -43,9 +43,9 @@ export const getValuesByCount = (maxValue, draws, date, getDrawValues) => {
       }
       return 0;
     });
-    acc[counter] = list;
+    acc.set(counter, list);
     return acc;
-  }, {})).sort(([counterA], [counterB]) => {
+  }, new Map())).sort(([counterA], [counterB]) => {
     if (counterA > counterB) {
       return -1;
     }
