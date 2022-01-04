@@ -11,7 +11,7 @@ import { toDateString } from "../../helpers/DrawHelper";
 import { EuroMillionsDraw, euroMillionsDrawConverter } from "../../helpers/EuroMillionsDrawHelper";
 // import { draws as defaultDraws } from "../../data/euroMillionsDraws";
 
-const EuroMillions = ({ db, dbCollection, onMenu }) => {
+const EuroMillions = ({ db, dbCollection, canEdit }) => {
 
   const [draws, setDraws] = useState([]);
   const [view, setView] = useState("DRAWS");
@@ -62,9 +62,9 @@ const EuroMillions = ({ db, dbCollection, onMenu }) => {
   };
 
   return (
-    <Tabs title="Euro Millions" logo="/euroMillions.jpg" tabs={tabs} selected={view} onClick={setView} onMenu={onMenu} >
+    <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} DrawComponent={Draw} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
+        <Draws draws={draws} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
         :
         <Stats draws={draws} />
       }

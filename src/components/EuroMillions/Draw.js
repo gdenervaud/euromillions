@@ -53,7 +53,7 @@ export const Star = ({ value, checked}) => {
 };
 
 
-export const Draw = ({ draw, onSave, onDelete }) => {
+export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
   const [date, setDate] = useState(draw.date);
@@ -120,7 +120,8 @@ export const Draw = ({ draw, onSave, onDelete }) => {
       date={date}
       list1={listOfNumbers}
       list2={listOfStars}
-      readOnly={readOnly}
+      canEdit={canEdit}
+      readOnly={readOnly || !canEdit}
       isNew={!draw.lastUpdated}
       list1ItemComponent={Number}
       list2ItemComponent={Star}

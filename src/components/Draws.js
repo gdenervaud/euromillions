@@ -168,6 +168,7 @@ export const Draw = ({
   date,
   list1,
   list2,
+  canEdit,
   readOnly,
   isNew,
   list1ItemComponent,
@@ -221,7 +222,10 @@ export const Draw = ({
         </ul>
       </div>
       {readOnly?
-        <button className={classes.editBtn} type="button" onClick={onEdit}><FontAwesomeIcon icon={"pencil-alt"} title={"editer le tirage"} /></button>
+        canEdit?
+          <button className={classes.editBtn} type="button" onClick={onEdit}><FontAwesomeIcon icon={"pencil-alt"} title={"editer le tirage"} /></button>
+          :
+          null
         :
         <div className={classes.editBtns}>
           <button className="btn btn-secondary" type="button" onClick={onCancelEdit}><FontAwesomeIcon icon="undo-alt" title={isNew?"Annuler la création du tirage":"annuler les changements"} /> Annuler</button>
@@ -232,7 +236,7 @@ export const Draw = ({
   );
 };
 
-export const Draws = ({ draws, DrawComponent, onAddDraw, onSaveDraw, onDeleteDraw }) => {
+export const Draws = ({ draws, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw }) => {
 
   const classes = useStyles();
 
@@ -241,7 +245,9 @@ export const Draws = ({ draws, DrawComponent, onAddDraw, onSaveDraw, onDeleteDra
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <button className="btn btn-primary" type="button" onClick={onAddDraw}><FontAwesomeIcon icon="plus" title="ajouter un draw" /> Ajouter un tirage</button>
+        {canEdit && (
+          <button className="btn btn-primary" type="button" onClick={onAddDraw}><FontAwesomeIcon icon="plus" title="ajouter un draw" /> Ajouter un tirage</button>
+        )}
       </div>
       <div>
         <Scrollbars autoHide ref={scrollIntoViewRef}>
@@ -249,7 +255,7 @@ export const Draws = ({ draws, DrawComponent, onAddDraw, onSaveDraw, onDeleteDra
             <ul ref={scrollIntoViewRef}>
               {draws.map((draw, index) => (
                 <li key={`${draw.date}-${index}`} >
-                  <DrawComponent draw={draw} onSave={onSaveDraw} onDelete={onDeleteDraw} />
+                  <DrawComponent draw={draw} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} />
                 </li>
               ))}
             </ul>

@@ -11,7 +11,7 @@ import { toDateString } from "../../helpers/DrawHelper";
 import { SwissLottoDraw, swissLottoDrawConverter } from "../../helpers/SwissLottoDrawHelper";
 // import { draws as defaultDraws } from "../../data/swissLottoDraws";
 
-const SwissLotto = ({ db, dbCollection, onMenu }) => {
+const SwissLotto = ({ db, dbCollection, canEdit }) => {
 
   const [draws, setDraws] = useState([]);
   const [view, setView] = useState("DRAWS");
@@ -62,9 +62,9 @@ const SwissLotto = ({ db, dbCollection, onMenu }) => {
   };
 
   return (
-    <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} onMenu={onMenu} >
+    <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} DrawComponent={Draw} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
+        <Draws draws={draws} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
         :
         <Stats draws={draws} />
       }

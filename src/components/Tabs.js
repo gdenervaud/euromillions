@@ -2,7 +2,6 @@
 
 import React from "react";
 import { createUseStyles } from "react-jss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = createUseStyles({
   container: {
@@ -52,28 +51,10 @@ const useStyles = createUseStyles({
       top: "25px",
       left: "30px"
     }
-  },
-  menuBtn: {
-    position: "absolute",
-    top: "-5px",
-    right: "5px",
-    border: 0,
-    background: "transparent",
-    fontSize: "x-large",
-    padding: "0.75rem",
-    color: "#454545",
-    "&:hover": {
-      boxShadow: "1px 1px 2px #8f8a8a"
-    },
-    "@media screen and (min-width:1024px)": {
-      top: "10px",
-      right: "10px",
-      padding: "0.375rem 0.75rem"
-    }
   }
 });
 
-export const Tabs = ({ title, logo, tabs, selected, onClick, onMenu, children }) => {
+export const Tabs = ({ title, logo, tabs, selected, onClick, children }) => {
 
   const classes = useStyles();
 
@@ -90,7 +71,6 @@ export const Tabs = ({ title, logo, tabs, selected, onClick, onMenu, children })
         {children}
       </div>
       <img className={classes.logo} src={logo} alt={title} />
-      <button className={classes.menuBtn} type="button" onClick={onMenu}><FontAwesomeIcon icon="bars" title="menu" /></button>
     </div>
   );
 };

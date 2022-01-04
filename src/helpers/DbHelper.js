@@ -27,6 +27,16 @@ export const saveDbItem = async (db, collectionName, item, converter) => {
   item.setDraw(updatedDocSnap.data());
 };
 
+export const getDbItem = async (db, collectionName, id) => {
+  const docRef = doc(db, collectionName, id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return data;
+  }
+  return {};
+};
+
 export const deleteDbItem = async (db, collectionName, id) => {
   await deleteDoc(doc(db, collectionName, id));
 };
