@@ -16,7 +16,7 @@ const useStyles = createUseStyles({
   },
   firebaseuiAuthContainer: {
     "& > .firebaseui-container": {
-      marginTop: "50%",
+      marginTop: "50vh",
       transform: "translateY(-50%)"
     }
   }

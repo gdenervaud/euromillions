@@ -113,19 +113,27 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     readOnly: readOnly
   }));
 
+  const lists = [
+    {
+      items: listOfNumbers,
+      itemComponent: Number,
+      onItemClick: handleNumberClick
+    },
+    {
+      items: listOfChances,
+      itemComponent: Chance,
+      onItemClick: handleChanceClick
+    }
+  ];
+
   return (
     <DrawComponent
       date={date}
-      list1={listOfNumbers}
-      list2={listOfChances}
+      lists={lists}
       canEdit={canEdit}
       readOnly={readOnly || !canEdit}
       isNew={!draw.lastUpdated}
-      list1ItemComponent={Number}
-      list2ItemComponent={Chance}
       onDateChange={handleDateChange}
-      onList1ItemClick={handleNumberClick}
-      onList2ItemClick={handleChanceClick}
       onEdit={handleEdit}
       onSave={handleSave}
       onDelete={handleDelete}

@@ -31,7 +31,17 @@ const useStyles = createUseStyles({
         color: "white"
       }
     }
-  }
+  },
+  swissWin: {
+    borderRadius: "50%",
+    backgroundColor: "white",
+    color: "red",
+    boxShadow: "0 5px 10px 0 hsl(0deg 0% 75% / 50%)",
+    "&.checked": {
+      backgroundColor: "red",
+      color: "white"
+    }
+  },
 });
 
 export const Number = ({ value, checked}) => {
@@ -52,6 +62,14 @@ export const Star = ({ value, checked}) => {
   );
 };
 
+export const SwissWin = ({ value, checked}) => {
+
+  const classes = useStyles();
+
+  return (
+    <NumberComponent value={value} checked={checked} className={classes.swissWin} />
+  );
+};
 
 export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
 
@@ -59,6 +77,7 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
   const [date, setDate] = useState(draw.date);
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [stars, setStars] = useState([...draw.stars]);
+  const [swissWin, setSwissWin] = useState([...draw.swissWin]);
 
   const handleDateChange = date => {
     setDate(date);
@@ -74,6 +93,11 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     setStars(list);
   };
 
+  const handleSwissWinClick = (number, add) => {
+    const list = getUpdatedList(swissWin, number, add);
+    setSwissWin(list);
+  };
+
   const handleEdit = () => {
     setReadOnly(false);
   };
@@ -82,6 +106,7 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     draw.date = date;
     draw.numbers = numbers;
     draw.stars = stars;
+    draw.swissWin = swissWin;
     setReadOnly(true);
     onSave(draw);
   };
@@ -89,6 +114,7 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setStars([...draw.stars]);
+    setSwissWin([...draw.swissWin]);
     setReadOnly(true);
     onDelete(draw);
   };
@@ -97,6 +123,7 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setStars([...draw.stars]);
+    setSwissWin([...draw.swissWin]);
     setReadOnly(true);
     if (!draw.lastUpdated) {
       onDelete(draw);
@@ -115,19 +142,38 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     readOnly: readOnly || !(stars.length < 2 || stars.includes(index))
   }));
 
+  const listOfSwissWin = Array.from(Array(50)).map((_, index) => index+1).filter(index => readOnly?swissWin.includes(index):true).map(index => ({
+    value: index,
+    checked: swissWin.includes(index),
+    readOnly: readOnly || !(swissWin.length < 5 || swissWin.includes(index))
+  }));
+
+  const lists = [
+    {
+      items: listOfNumbers,
+      itemComponent: Number,
+      onItemClick: handleNumberClick
+    },
+    {
+      items: listOfStars,
+      itemComponent: Star,
+      onItemClick: handleStarClick
+    },
+    {
+      items: listOfSwissWin,
+      itemComponent: SwissWin,
+      onItemClick: handleSwissWinClick
+    }
+  ];
+
   return (
     <DrawComponent
       date={date}
-      list1={listOfNumbers}
-      list2={listOfStars}
+      lists={lists}
       canEdit={canEdit}
       readOnly={readOnly || !canEdit}
       isNew={!draw.lastUpdated}
-      list1ItemComponent={Number}
-      list2ItemComponent={Star}
       onDateChange={handleDateChange}
-      onList1ItemClick={handleNumberClick}
-      onList2ItemClick={handleStarClick}
       onEdit={handleEdit}
       onSave={handleSave}
       onDelete={handleDelete}

@@ -8,7 +8,7 @@ export class SwissLottoDraw {
   constructor (id, date, numbers, chance, lastUpdated) {
     this.id = id;
     this.date = date;
-    this.numbers = numbers;
+    this.numbers = Array.isArray(numbers)?numbers:[];
     this.chance = chance;
     this.lastUpdated = lastUpdated;
   }

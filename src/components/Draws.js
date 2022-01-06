@@ -166,16 +166,11 @@ const useStyles = createUseStyles({
 
 export const Draw = ({
   date,
-  list1,
-  list2,
+  lists,
   canEdit,
   readOnly,
   isNew,
-  list1ItemComponent,
-  list2ItemComponent,
   onDateChange,
-  onList1ItemClick,
-  onList2ItemClick,
   onEdit,
   onSave,
   onDelete,
@@ -203,24 +198,17 @@ export const Draw = ({
           </>
         }
       </div>
-      <div className={classes.list}>
-        <ul>
-          {!!list1.length && list1.map(item => (
-            <li key={item.value}>
-              <Value Component={list1ItemComponent} value={item.value} checked={item.checked} readOnly={item.readOnly} onClick={onList1ItemClick} />
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className={classes.list}>
-        <ul>
-          {!!list2.length && list2.map(item => (
-            <li key={item.value}>
-              <Value Component={list2ItemComponent} value={item.value} checked={item.checked} readOnly={item.readOnly} onClick={onList2ItemClick} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      {lists.map(({items, itemComponent, onItemClick}, index) =>
+        <div key={index} className={classes.list}>
+          <ul>
+            {!!items.length && items.map(item => (
+              <li key={item.value}>
+                <Value Component={itemComponent} value={item.value} checked={item.checked} readOnly={item.readOnly} onClick={onItemClick} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {readOnly?
         canEdit?
           <button className={classes.editBtn} type="button" onClick={onEdit}><FontAwesomeIcon icon={"pencil-alt"} title={"editer le tirage"} /></button>
