@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { getValuesByCount } from "../helpers/DrawHelper";
+import { getValuesStats, getValuesByCount } from "../helpers/DrawHelper";
 import { Value } from "./Number";
 
 const useStyles = createUseStyles({
@@ -13,7 +14,7 @@ const useStyles = createUseStyles({
     width: "100% ",
     height: "100%",
     display: "grid",
-    gridTemplateRows: "min-content 1fr",
+    gridTemplateRows: "1fr min-content 1fr",
     gridTemplateColumns: "1fr"
   },
   header: {
@@ -92,8 +93,88 @@ const useStyles = createUseStyles({
         display: "inline-block"
       }
     }
+  },
+  barPnl: {
+    background: "rgba(0,0,0,0.1)",
+    position: "relative",
+    width: "100%",
+    height: "30px",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: "0 5px",
+    borderRadius: "100px"
+  },
+  bar: {
+    position: "relative",
+    width: 0,
+    height: "20px",
+    boxShadow: "0 10px 40px -10px #000",
+    borderRadius: "100px",
+    background: "linear-gradient(to bottom, #A3E2EF 35%, #4F9CC0)"
+  },
+  barValue: {
+    position: "absolute",
+    top: "-2px",
+    left: "calc(100% + 6px)",
+    whiteSpace: "nowrap",
+    textAlign: "right",
+    "&.inside": {
+      left: "calc(100% - 10px)",
+      transform: "translateX(-100%)"
+    }
+  },
+  arrow: {
+    marginLeft: "6px",
+    "&.arrow-trend2": {
+      transform: "rotate(-90deg)",
+      color: "lime"
+    },
+    "&.arrow-trend1": {
+      transform: "rotate(-45deg)",
+      color: "lime"
+    },
+    "&.arrow-trend-1": {
+      transform: "rotate(45deg)",
+      color: "red"
+    },
+    "&.arrow-trend-2": {
+      transform: "rotate(90deg)",
+      color: "red"
+    }
   }
 });
+
+const Evolution =  ({ draws, maxValue, itemComponent, getValue}) => {
+
+  const classes = useStyles();
+
+  const valuesStats = getValuesStats(maxValue, draws, getValue, 10, 50);
+
+  return (
+    <table>
+      {valuesStats.map(({value, successes, numberOfDraws, percentageOfSuccesses, trend}) => (
+        <tr key={value}>
+          <td>
+            <Value Component={itemComponent} value={value} checked={true} readOnly={true} />
+          </td>
+          <td style={{width: "100%"}}>
+            <div className={classes.barPnl}>
+              <div className={classes.bar} style={{width: `${percentageOfSuccesses * 100}%`}}>
+                <div className={`${classes.barValue} ${percentageOfSuccesses > 0.5?"inside":""}`}>{successes} / {numberOfDraws}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div className={`${classes.arrow} arrow-trend${trend}`}>
+              <FontAwesomeIcon icon="arrow-right" size="2x" />
+            </div>
+          </td>
+        </tr>
+      ))}
+    </table>
+  );
+};
 
 const Serie = ({ draws, maxValue, itemComponent, date, getValue}) => {
 
@@ -123,11 +204,14 @@ export const Stats = ({ draws, series}) => {
 
   const classes = useStyles();
 
-  const dates = draws.reduce((acc, draw, index) => {
-    acc.push({
-      name: `depuis ${index > 0?"les " + (index + 1) + " derniers tirages":"le dernier tirage"} (${new Date(draw.date).toLocaleDateString()})`,
-      value: draw.date
-    });
+  const dates = draws.reduce((acc, draw, idx) => {
+    const index = idx + 1;
+    if ([1,2,3,4,5,10,15,20,30,50,100].includes(index)) {
+      acc.push({
+        name: `depuis ${index > 1?"les " + index + " derniers tirages":"le dernier tirage"} (${new Date(draw.date).toLocaleDateString()})`,
+        value: draw.date
+      });
+    }
     return acc;
   }, [{
     name: "pour l'ensemble des tirages",
@@ -136,6 +220,15 @@ export const Stats = ({ draws, series}) => {
 
   return (
     <div className={classes.container}>
+      <div>
+        <Scrollbars autoHide>
+          <div className={classes.stats} >
+            {series.map(({maxValue, itemComponent, getValue}, index) => (
+              <Evolution key={index} draws={draws} maxValue={maxValue} itemComponent={itemComponent} getValue={getValue} />
+            ))}
+          </div>
+        </Scrollbars>
+      </div>
       <div className={classes.header}>
         Calculer:&nbsp;
         <div className={classes.selectBox} >
