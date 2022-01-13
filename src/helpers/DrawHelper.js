@@ -37,95 +37,77 @@ export const getUpdatedList = (list, number, add) => {
   return result;
 };
 
-export const getValuesByCount = (maxValue, draws, date, getDrawValues) => {
-
-  const values = Array.from(Array(maxValue)).map((_, index) => index+1).reduce((acc,index) => {
-    acc.set(index, 0);
+export const getDates = (draws, whiteList, includeAll) => {
+  const dates = draws.reduce((acc, draw, idx) => {
+    const index = idx + 1;
+    if (whiteList.includes(index)) {
+      acc.push({
+        name: `depuis ${index > 1?"les " + index + " derniers tirages":"le dernier tirage"} (${new Date(draw.date).toLocaleDateString()})`,
+        value: draw.date
+      });
+    }
     return acc;
-  }, new Map());
-
-  draws.filter(draw => draw.date >= date).forEach(draw => {
-    const vals = getDrawValues(draw);
-    vals.forEach(value => values.set(value, values.get(value) + 1));
-  });
-
-  const result = Array.from(Array.from(values).reduce((acc, [value, counter]) => {
-    if (!acc.has(counter)) {
-      acc.set(counter, []);
-    }
-    const list = [...(acc.get(counter)), value];
-    list.sort((valueA, valueB) => {
-      if (valueA > valueB) {
-        return 1;
-      }
-      if (valueB > valueA) {
-        return -1;
-      }
-      return 0;
-    });
-    acc.set(counter, list);
-    return acc;
-  }, new Map())).sort(([counterA], [counterB]) => {
-    if (counterA > counterB) {
-      return -1;
-    }
-    if (counterB > counterA) {
-      return 1;
-    }
-    return 0;
-  });
-  return result;
+  }, includeAll?[{
+    name: "pour l'ensemble des tirages",
+    value: ""
+  }]:[]);
+  return dates;
 };
 
-export const getValuesStats = (maxValue, draws, getDrawValues, numberOfDrawsForTrend, numberOfPeriodsForTrend) => {
+export const getValuesStats = (maxValue, draws, getDrawValues, date, trendDate) => {
 
   const values = Array.from(Array(maxValue)).map((_, index) => index+1).reduce((acc,index) => {
     acc.set(index, {
-      successes: 0,
-      weightings: Array.from(Array(numberOfPeriodsForTrend)).map(() => 0)
+      success: 0,
+      trendSuccess: 0
     });
     return acc;
   }, new Map());
 
-  const drawsByDate = draws.sort((a, b) => a.date - b.date).slice(0, numberOfDrawsForTrend + numberOfPeriodsForTrend + 1);
-
-  drawsByDate.forEach((draw, index) => {
+  const drawsForTrend = draws.filter(draw => draw.date >= trendDate);
+  drawsForTrend.forEach(draw => {
     const vals = getDrawValues(draw);
     vals.forEach(value => {
-      const stats = values.get(value);
-      stats.successes += 1;
-      stats.weightings.forEach((weighting, idx) => {
-        if (index < numberOfDrawsForTrend + idx && index >= idx) {
-          stats.weightings[idx] =  weighting + numberOfDrawsForTrend + idx - index;
-        }
-      });
+      const counters = values.get(value);
+      counters.trendSuccess += 1;
     });
   });
 
-  const result = Array.from(values).reduce((acc, [value, {successes, weightings}]) => {
-    const average = StatsHelpers.average(weightings);
-    const standardDeviation = StatsHelpers.standardDeviation(weightings);
-    const above1 = average + standardDeviation;
-    const above2 = average + 2 * standardDeviation;
-    const below1 = average - standardDeviation;
-    const below2 = average - 2 * standardDeviation;
-    const weighting = weightings[0];
+  const drawsForPeriod = draws.filter(draw => draw.date >= date);
+  drawsForPeriod.forEach(draw => {
+    const vals = getDrawValues(draw);
+    vals.forEach(value => {
+      const counters = values.get(value);
+      counters.success += 1;
+    });
+  });
+
+  const trendPeriodSuccesses = Array.from(values).map(([_, {trendSuccess}]) => trendSuccess);
+  const average = StatsHelpers.average(trendPeriodSuccesses);
+  const standardDeviation = StatsHelpers.standardDeviation(trendPeriodSuccesses);
+  const above1 = average + standardDeviation;
+  const above2 = average + 2 * standardDeviation;
+  const below1 = average - standardDeviation;
+  const below2 = average - 2 * standardDeviation;
+
+  const result = Array.from(values).reduce((acc, [value, {success, trendSuccess}]) => {
     let trend = 0;
-    if (weighting > above2) {
+    if (trendSuccess > above2) {
       trend = 2;
-    } else if (weighting > above1) {
+    } else if (trendSuccess > above1) {
       trend = 1;
-    } else if (weighting < below2) {
+    } else if (trendSuccess < below2) {
       trend = -2;
-    } else if (weighting < below1) {
+    } else if (trendSuccess < below1) {
       trend = -1;
     }
-    const percentage =  Math.round((successes / numberOfDrawsForTrend  + Number.EPSILON) * 100) / 100;
+    const percentage =  Math.round((success / drawsForPeriod.length  + Number.EPSILON) * 100) / 100;
     acc.push({
       value: value,
-      successes: successes,
-      numberOfDraws: numberOfDrawsForTrend,
+      success: success,
+      numberOfDraws: drawsForPeriod.length,
       percentageOfSuccesses: percentage,
+      trendSuccess: trendSuccess,
       trend: trend
     });
     return acc;
