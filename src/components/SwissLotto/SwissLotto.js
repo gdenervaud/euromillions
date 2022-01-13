@@ -11,10 +11,25 @@ import { toDateString } from "../../helpers/DrawHelper";
 import { SwissLottoDraw, swissLottoDrawConverter } from "../../helpers/SwissLottoDrawHelper";
 // import { draws as defaultDraws } from "../../data/swissLottoDraws";
 
+const SwissLottoLocalStorageKey = "SwissLotto";
+const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(SwissLottoLocalStorageKey))?null:localStorage.getItem(SwissLottoLocalStorageKey);
+let saved_favorite = [[], []];
+try {
+  const res = JSON.parse(saved_favorites_string);
+  const [numbers, chance] = res;
+  if (Array.isArray(numbers) && Array.isArray(chance)) {
+    saved_favorite = res;
+  }
+} catch (e) {
+  //
+}
+
 const SwissLotto = ({ db, dbCollection, canEdit }) => {
 
   const [draws, setDraws] = useState([]);
   const [view, setView] = useState("DRAWS");
+
+  const [favorites, setFavorites] = useState(saved_favorite);
 
   const tabs = [
     {
@@ -61,12 +76,17 @@ const SwissLotto = ({ db, dbCollection, canEdit }) => {
     setDraws(draws => draws.filter(d => d.id !== draw.id));
   };
 
+  const handleOnFavoritesChange = fav => {
+    setFavorites(fav);
+    typeof Storage !== "undefined" && localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
+  };
+
   return (
     <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
+        <Draws draws={draws} favorites={favorites} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onFavoritesChange={handleOnFavoritesChange} />
         :
-        <Stats draws={draws} />
+        <Stats draws={draws} favorites={favorites} onFavoritesChange={handleOnFavoritesChange} />
       }
     </Tabs>
   );

@@ -47,7 +47,7 @@ export const Chance = ({ value, checked}) => {
 };
 
 
-export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
+export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, onFavoritesChange }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
   const [date, setDate] = useState(draw.date);
@@ -101,28 +101,48 @@ export const Draw = ({ draw, canEdit, onSave, onDelete }) => {
     }
   };
 
+  const handleFavoriteNumberClick = (number, add) => {
+    const list = getUpdatedList(favorites[0], number, add);
+    onFavoritesChange([
+      list,
+      favorites[1]
+    ]);
+  };
+
+  const handleFavoriteChanceClick = (chance, add) => {
+    const list = getUpdatedList(favorites[1], chance, add);
+    onFavoritesChange([
+      favorites[0],
+      list
+    ]);
+  };
+
   const listOfNumbers = Array.from(Array(42)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
     value: index,
     checked: numbers.includes(index),
-    readOnly: readOnly || !(numbers.length < 6 || numbers.includes(index))
+    readOnly: readOnly || !(numbers.length < 6 || numbers.includes(index)),
+    isFavorite: favorites[0].includes(index)
   }));
 
   const listOfChances = Array.from(Array(6)).map((_, index) => index+1).filter(index => readOnly?index === chance:true).map(index => ({
     value: index,
     checked: chance === index,
-    readOnly: readOnly
+    readOnly: readOnly,
+    isFavorite: favorites[1].includes(index)
   }));
 
   const lists = [
     {
       items: listOfNumbers,
       itemComponent: Number,
-      onItemClick: handleNumberClick
+      onItemClick: handleNumberClick,
+      onItemFavorite: handleFavoriteNumberClick
     },
     {
       items: listOfChances,
       itemComponent: Chance,
-      onItemClick: handleChanceClick
+      onItemClick: handleChanceClick,
+      onItemFavorite: handleFavoriteChanceClick
     }
   ];
 

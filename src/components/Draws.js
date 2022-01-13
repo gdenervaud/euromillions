@@ -174,7 +174,8 @@ export const Draw = ({
   onEdit,
   onSave,
   onDelete,
-  onCancelEdit
+  onCancelEdit,
+  onFavorite
 }) => {
 
   const [deleteMode, setDeleteMode] = useState(false);
@@ -198,12 +199,12 @@ export const Draw = ({
           </>
         }
       </div>
-      {lists.map(({items, itemComponent, onItemClick}, index) =>
+      {lists.map(({items, itemComponent, onItemClick, onItemFavorite}, index) =>
         <div key={index} className={classes.list}>
           <ul>
             {!!items.length && items.map(item => (
               <li key={item.value}>
-                <Value Component={itemComponent} value={item.value} checked={item.checked} readOnly={item.readOnly} onClick={onItemClick} />
+                <Value Component={itemComponent} value={item.value} checked={item.checked} readOnly={item.readOnly} isFavorite={item.isFavorite} onClick={onItemClick} onFavorite={readOnly?onItemFavorite:undefined} />
               </li>
             ))}
           </ul>
@@ -224,7 +225,7 @@ export const Draw = ({
   );
 };
 
-export const Draws = ({ draws, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw }) => {
+export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw, onFavoritesChange }) => {
 
   const classes = useStyles();
 
@@ -243,7 +244,7 @@ export const Draws = ({ draws, DrawComponent, canEdit, onAddDraw, onSaveDraw, on
             <ul ref={scrollIntoViewRef}>
               {draws.map((draw, index) => (
                 <li key={`${draw.date}-${index}`} >
-                  <DrawComponent draw={draw} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} />
+                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} onFavoritesChange={onFavoritesChange} />
                 </li>
               ))}
             </ul>

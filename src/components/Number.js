@@ -22,6 +22,7 @@ const useStyles = createUseStyles({
   },
   value: {
     display: "inline-block",
+    position: "relative",
     margin: "6px",
     fontSize: "20px",
     fontWeight: "bold",
@@ -69,18 +70,68 @@ const useStyles = createUseStyles({
         color: "white"
       }
     }
+  },
+  favorite: {
+    position: "absolute",
+    top: "5px",
+    right: "-5px"
+  },
+  favoritePnl: {
+    position: "relative"
+  },
+  favoriteShadow: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    color: "black"
+  },
+  favoriteColor: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    color: "yellow",
+    transform: "scale(0.9) translate(-1px, -1px)"
   }
 });
 
-export const Value = ({ value, checked, readOnly, Component, onClick }) => {
+const Favorite = ({show}) => {
+  const classes = useStyles();
+  if (!show) {
+    return null;
+  }
+  return (
+    <div className={classes.favorite}>
+      <div className={classes.favoritePnl}>
+        <FontAwesomeIcon icon="star" className={classes.favoriteShadow} />
+        <FontAwesomeIcon icon="star" className={classes.favoriteColor} />
+      </div>
+    </div>
+  );
+};
+
+export const Value = ({ value, checked, isFavorite, readOnly, Component, onClick, onFavorite }) => {
 
   const classes = useStyles();
 
   if (readOnly) {
+    if (typeof onFavorite !== "function") {
+      return (
+        <div className={classes.value} >
+          <Component value={value} checked={checked} />
+          <Favorite show={isFavorite} />
+        </div>
+      );
+    }
+
+    const handleCLick = () => {
+      onFavorite(value, !isFavorite);
+    };
+
     return (
-      <div className={classes.value} >
+      <button type="button" className={`${classes.valueBtn} ${classes.value}`} onClick={handleCLick} >
         <Component value={value} checked={checked} />
-      </div>
+        <Favorite show={isFavorite} />
+      </button>
     );
   }
 

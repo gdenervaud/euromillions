@@ -11,10 +11,25 @@ import { toDateString } from "../../helpers/DrawHelper";
 import { EuroMillionsDraw, euroMillionsDrawConverter } from "../../helpers/EuroMillionsDrawHelper";
 // import { draws as defaultDraws } from "../../data/euroMillionsDraws";
 
+const EuroMillionsLocalStorageKey = "EuroMillions";
+const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(EuroMillionsLocalStorageKey))?null:localStorage.getItem(EuroMillionsLocalStorageKey);
+let saved_favorite = [[], [], []];
+try {
+  const res = JSON.parse(saved_favorites_string);
+  const [numbers, stars, swissWin] = res;
+  if (Array.isArray(numbers) && Array.isArray(stars) && Array.isArray(swissWin)) {
+    saved_favorite = res;
+  }
+} catch (e) {
+  //
+}
+
 const EuroMillions = ({ db, dbCollection, canEdit }) => {
 
   const [draws, setDraws] = useState([]);
   const [view, setView] = useState("DRAWS");
+
+  const [favorites, setFavorites] = useState(saved_favorite);
 
   const tabs = [
     {
@@ -61,12 +76,17 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
     setDraws(draws => draws.filter(d => d.id !== draw.id));
   };
 
+  const handleOnFavoritesChange = fav => {
+    setFavorites(fav);
+    typeof Storage !== "undefined" && localStorage.setItem(EuroMillionsLocalStorageKey, JSON.stringify(fav));
+  };
+
   return (
     <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} />
+        <Draws draws={draws} favorites={favorites} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onFavoritesChange={handleOnFavoritesChange} />
         :
-        <Stats draws={draws} />
+        <Stats draws={draws} favorites={favorites} onFavoritesChange={handleOnFavoritesChange} />
       }
     </Tabs>
   );

@@ -214,7 +214,7 @@ const useStyles = createUseStyles({
   }
 });
 
-const Serie =  ({ draws, maxValue, itemComponent, getValue, date, trendDate}) => {
+const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onItemFavorite, date, trendDate}) => {
 
   const classes = useStyles();
 
@@ -262,7 +262,7 @@ const Serie =  ({ draws, maxValue, itemComponent, getValue, date, trendDate}) =>
         {sortedValuesStats.map(({value, success, numberOfDraws, percentageOfSuccesses, trend}) => (
           <tr key={value}>
             <td>
-              <Value Component={itemComponent} value={value} checked={true} readOnly={true} />
+              <Value Component={itemComponent} value={value} checked={true} isFavorite={favorites.includes(value)} readOnly={true} onFavorite={onItemFavorite} />
             </td>
             <td style={{width: "100%"}}>
               <div className={classes.barPnl}>
@@ -337,8 +337,8 @@ export const Stats = ({ draws, series}) => {
       <div>
         <Scrollbars autoHide>
           <div className={classes.stats} >
-            {series.map(({maxValue, itemComponent, getValue}, index) => (
-              <Serie key={index} draws={draws} maxValue={maxValue} itemComponent={itemComponent} getValue={getValue} date={date} trendDate={trendDate} />
+            {series.map(({maxValue, itemComponent, getValue, favorites, onItemFavorite}, index) => (
+              <Serie key={index} draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onItemFavorite={onItemFavorite} date={date} trendDate={trendDate} />
             ))}
           </div>
         </Scrollbars>
