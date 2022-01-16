@@ -1,53 +1,11 @@
 import React, { useState } from "react";
-import { createUseStyles } from "react-jss";
 
 import { getUpdatedList } from "../../helpers/DrawHelper";
-import { Number as NumberComponent } from "../Number";
-import { Draw as DrawComponent } from "../Draws";
+import { Number } from "./Number";
+import { Chance } from "./Chance";
+import { Draw as DrawComponent } from "../Draws/Draw";
 
-const useStyles = createUseStyles({
-  number: {
-    borderRadius: 0,
-    backgroundColor: "white",
-    color: "red",
-    boxShadow: "0 5px 10px 0 hsl(0deg 0% 75% / 50%)",
-    "&.checked": {
-      backgroundColor: "#001367",
-      color: "white"
-    }
-  },
-  chance: {
-    borderRadius: "50%",
-    backgroundColor: "white",
-    color: "red",
-    boxShadow: "0 5px 10px 0 hsl(0deg 0% 75% / 50%)",
-    "&.checked": {
-      backgroundColor: "#eebb05",
-      color: "red"
-    }
-  }
-});
-
-export const Number = ({ value, checked}) => {
-
-  const classes = useStyles();
-
-  return (
-    <NumberComponent value={value} checked={checked} className={classes.number} />
-  );
-};
-
-export const Chance = ({ value, checked}) => {
-
-  const classes = useStyles();
-
-  return (
-    <NumberComponent value={value} checked={checked} className={classes.chance} />
-  );
-};
-
-
-export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, onFavoritesChange }) => {
+export const Draw = ({ draw, favorites, canEdit, onSave, onDelete }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
   const [date, setDate] = useState(draw.date);
@@ -101,34 +59,18 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, onFavoritesCh
     }
   };
 
-  const handleFavoriteNumberClick = (number, add) => {
-    const list = getUpdatedList(favorites[0], number, add);
-    onFavoritesChange([
-      list,
-      favorites[1]
-    ]);
-  };
-
-  const handleFavoriteChanceClick = (chance, add) => {
-    const list = getUpdatedList(favorites[1], chance, add);
-    onFavoritesChange([
-      favorites[0],
-      list
-    ]);
-  };
-
   const listOfNumbers = Array.from(Array(42)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
     value: index,
     checked: numbers.includes(index),
     readOnly: readOnly || !(numbers.length < 6 || numbers.includes(index)),
-    isFavorite: favorites[0].includes(index)
+    isFavorite: favorites[0].list.includes(index)
   }));
 
   const listOfChances = Array.from(Array(6)).map((_, index) => index+1).filter(index => readOnly?index === chance:true).map(index => ({
     value: index,
     checked: chance === index,
     readOnly: readOnly,
-    isFavorite: favorites[1].includes(index)
+    isFavorite: favorites[1].list.includes(index)
   }));
 
   const lists = [
@@ -136,13 +78,13 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, onFavoritesCh
       items: listOfNumbers,
       itemComponent: Number,
       onItemClick: handleNumberClick,
-      onItemFavorite: handleFavoriteNumberClick
+      onItemFavorite: favorites[0].onItemToggle
     },
     {
       items: listOfChances,
       itemComponent: Chance,
       onItemClick: handleChanceClick,
-      onItemFavorite: handleFavoriteChanceClick
+      onItemFavorite: favorites[1].onItemToggle
     }
   ];
 

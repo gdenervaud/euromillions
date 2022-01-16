@@ -1,41 +1,25 @@
 import React from "react";
 
-import { getUpdatedList } from "../../helpers/DrawHelper";
-import { Stats as StatsComponent } from "../Stats";
-import { Number, Chance } from "./Draw";
+import { Stats as StatsComponent } from "../Stats/Stats";
+import { Number } from "./Number";
+import { Chance } from "./Chance";
 
 export const Stats = ({ draws, favorites, onFavoritesChange }) => {
-
-  const handleFavoriteNumberClick = (number, add) => {
-    const list = getUpdatedList(favorites[0], number, add);
-    onFavoritesChange([
-      list,
-      favorites[1]
-    ]);
-  };
-
-  const handleFavoriteChanceClick = (chance, add) => {
-    const list = getUpdatedList(favorites[1], chance, add);
-    onFavoritesChange([
-      favorites[0],
-      list
-    ]);
-  };
 
   const series = [
     {
       maxValue: 42,
       itemComponent: Number,
       getValue: draw => [...draw.numbers],
-      favorites: favorites[0],
-      onItemFavorite: handleFavoriteNumberClick
+      favorites: favorites[0].list,
+      onFavoriteToggle: favorites[0].onItemToggle
     },
     {
       maxValue: 6,
       itemComponent: Chance,
       getValue: draw => [draw.chance],
-      favorites: favorites[1],
-      onItemFavorite: handleFavoriteChanceClick
+      favorites: favorites[1].list,
+      onFavoriteToggle: favorites[1].onItemToggle
     }
   ];
 

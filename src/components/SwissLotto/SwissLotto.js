@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import _  from "lodash-uuid";
 
 import { Tabs } from "../Tabs";
-import { Draws } from "../Draws";
+import { Draws } from "../Draws/Draws";
 import { Draw } from "./Draw";
 import { Stats } from "./Stats";
 
+import { getUpdatedList } from "../../helpers/DrawHelper";
 import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
 import { toDateString } from "../../helpers/DrawHelper";
 import { SwissLottoDraw, swissLottoDrawConverter } from "../../helpers/SwissLottoDrawHelper";
+import { Number } from "./Number";
+import { Chance } from "./Chance";
 // import { draws as defaultDraws } from "../../data/swissLottoDraws";
 
 const SwissLottoLocalStorageKey = "SwissLotto";
@@ -17,9 +20,10 @@ let saved_favorite = [[], []];
 try {
   const res = JSON.parse(saved_favorites_string);
   const [numbers, chance] = res;
-  if (Array.isArray(numbers) && Array.isArray(chance)) {
-    saved_favorite = res;
-  }
+  saved_favorite = [
+    Array.isArray(numbers)?numbers:[],
+    Array.isArray(chance)?chance:[]
+  ];
 } catch (e) {
   //
 }
@@ -76,17 +80,33 @@ const SwissLotto = ({ db, dbCollection, canEdit }) => {
     setDraws(draws => draws.filter(d => d.id !== draw.id));
   };
 
-  const handleOnFavoritesChange = fav => {
+  const updateFavorites = fav => {
     setFavorites(fav);
     typeof Storage !== "undefined" && localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
   };
 
+  const handleResetFavorites = () => {
+    updateFavorites([[], []]);
+  };
+
+  const components = [Number, Chance];
+  const fav = favorites.map((list, index) => ({
+    list: list,
+    itemComponent: components[index],
+    onItemToggle: (value, add) => {
+      const updatedList = value?getUpdatedList(favorites[index], value, add):[];
+      const updatedFav = [...favorites];
+      updatedFav[index] = updatedList;
+      updateFavorites(updatedFav);
+    }
+  }));
+
   return (
     <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} favorites={favorites} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onFavoritesChange={handleOnFavoritesChange} />
+        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} />
         :
-        <Stats draws={draws} favorites={favorites} onFavoritesChange={handleOnFavoritesChange} />
+        <Stats draws={draws} favorites={fav} />
       }
     </Tabs>
   );

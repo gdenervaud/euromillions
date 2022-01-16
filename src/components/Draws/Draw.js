@@ -1,42 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Scrollbars } from "react-custom-scrollbars";
 
-import { Value } from "./Number";
+import { Value } from "../Value";
 
 const useStyles = createUseStyles({
-  container: {
-    position: "relative",
-    width: "100% ",
-    height: "100%",
-    display: "grid",
-    gridTemplateRows: "min-content 1fr",
-    gridTemplateColumns: "1fr"
-  },
-  header: {
-    padding: "20px",
-    "& > button": {
-      padding: "0.65rem 0.75rem",
-      "@media screen and (min-width:1024px)": {
-        padding: "0.375rem 0.75rem",
-      }
-    }
-  },
-  draws: {
-    padding: "0 20px 20px 20px",
-    "& > ul": {
-      listStyleType: "none",
-      margin: 0,
-      padding: 0,
-      "& > li": {
-        display: "block",
-        "& + li ": {
-          marginTop: "20px"
-        }
-      }
-    }
-  },
   draw: {
     position: "relative",
     width: "100% ",
@@ -91,6 +59,7 @@ const useStyles = createUseStyles({
     background: "transparent",
     fontSize: "x-large",
     color: "#454545",
+    transition: "box-shadow 0.3s ease-in-out",
     "&:hover": {
       boxShadow: "1px 1px 2px #8f8a8a"
     },
@@ -127,6 +96,7 @@ const useStyles = createUseStyles({
     background: "transparent",
     fontSize: "x-large",
     color: "#454545",
+    transition: "box-shadow 0.3s ease-in-out",
     "&.active": {
       color: "#28a745"
     },
@@ -224,35 +194,3 @@ export const Draw = ({
     </div>
   );
 };
-
-export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw, onFavoritesChange }) => {
-
-  const classes = useStyles();
-
-  const scrollIntoViewRef = useRef();
-
-  return (
-    <div className={classes.container}>
-      <div className={classes.header}>
-        {canEdit && (
-          <button className="btn btn-primary" type="button" onClick={onAddDraw}><FontAwesomeIcon icon="plus" title="ajouter un draw" /> Ajouter un tirage</button>
-        )}
-      </div>
-      <div>
-        <Scrollbars autoHide ref={scrollIntoViewRef}>
-          <div className={classes.draws} >
-            <ul ref={scrollIntoViewRef}>
-              {draws.map((draw, index) => (
-                <li key={`${draw.date}-${index}`} >
-                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} onFavoritesChange={onFavoritesChange} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Scrollbars>
-      </div>
-    </div>
-  );
-};
-
-export default Draws;

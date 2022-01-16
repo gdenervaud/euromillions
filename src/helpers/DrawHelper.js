@@ -33,7 +33,7 @@ export const getUpdatedList = (list, number, add) => {
       result.splice(index, 1);
     }
   }
-  result.sort();
+  result.sort((a, b) => a-b);
   return result;
 };
 
@@ -112,5 +112,20 @@ export const getValuesStats = (maxValue, draws, getDrawValues, date, trendDate) 
     });
     return acc;
   }, []);
+  return result;
+};
+
+export const sortValuesStats = (valuesStats, sortCriteria, sortAscending) => {
+  const result = valuesStats.sort((a, b) => {
+    if (sortCriteria !== "value" && a[sortCriteria] === b[sortCriteria]) {
+      const secondCriteria = "trendSuccess";
+      if (sortCriteria === "trend" && a[secondCriteria] === b[secondCriteria]) {
+        const thirdCriteria = "success";
+        return sortAscending?a[thirdCriteria] - b[thirdCriteria]:b[thirdCriteria] - a[thirdCriteria];
+      }
+      return sortAscending?a[secondCriteria] - b[secondCriteria]:b[secondCriteria] - a[secondCriteria];
+    }
+    return sortAscending?a[sortCriteria] - b[sortCriteria]:b[sortCriteria] - a[sortCriteria];
+  });
   return result;
 };
