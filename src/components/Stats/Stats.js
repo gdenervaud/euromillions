@@ -5,6 +5,7 @@ import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { getDates } from "../../helpers/DrawHelper";
+import Toggle from "../Toggle";
 import { Favorites } from "./Favorites";
 import { Serie } from "./Serie";
 
@@ -26,6 +27,7 @@ const useStyles = createUseStyles({
     },
     "@media screen and (min-width:768px)": {
       flexDirection: "row",
+      alignItems: "center",
       "& > div + div": {
         marginTop: 0,
         marginLeft: "20px"
@@ -139,6 +141,8 @@ export const Stats = ({ draws, series}) => {
   const [sortAscending, setSortAscending] = useState(true);
   const [sortCriteria, setSortCriteria] = useState("value");
 
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
   const handleOnSort = criteria => {
     if (criteria === sortCriteria) {
       setSortAscending(!sortAscending);
@@ -148,6 +152,10 @@ export const Stats = ({ draws, series}) => {
     }
   };
 
+  const handleShowOnlyFavorites = (_, value) => setShowOnlyFavorites(!!value);
+
+  const hasFavorites = series.some(serie => !!serie.favorites.length);
+
   const classes = useStyles();
 
   return (
@@ -155,14 +163,25 @@ export const Stats = ({ draws, series}) => {
       <div className={classes.header} >
         <DateSelector draws={draws} date={date} onChange={setDate} />
         <TrendDateSelector draws={draws} date={trendDate} onChange={setTrendDate} />
+        {hasFavorites && (
+          <Toggle
+            className={classes.toggle}
+            option={{value: showOnlyFavorites?true:undefined}}
+            label="Afficher uniquement les favoris"
+            show={true}
+            onChange={handleShowOnlyFavorites}
+          />
+        )}
       </div>
       <div>
         <Scrollbars autoHide>
           <div className={classes.stats} >
             {series.map(({maxValue, itemComponent, getValue, favorites, onFavoriteToggle}, index) => (
               <div  key={index} className={classes.serie} >
-                <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
-                <Serie draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} date={date} trendDate={trendDate} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort}/>
+                {!showOnlyFavorites && (
+                  <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
+                )}
+                <Serie draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} date={date} trendDate={trendDate} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
               </div>
             ))}
           </div>

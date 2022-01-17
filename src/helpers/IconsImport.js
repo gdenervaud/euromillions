@@ -13,6 +13,7 @@ import {faSignInAlt} from "@fortawesome/free-solid-svg-icons/faSignInAlt";
 import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons/faSignOutAlt";
 import {faUsers} from "@fortawesome/free-solid-svg-icons/faUsers";
 import {faArrowRight} from "@fortawesome/free-solid-svg-icons/faArrowRight";
+import {faDotCircle} from "@fortawesome/free-solid-svg-icons/faDotCircle";
 
 library.add(
   faHome,
@@ -27,5 +28,6 @@ library.add(
   faSignInAlt,
   faSignOutAlt,
   faUsers,
-  faArrowRight
+  faArrowRight,
+  faDotCircle
 );
