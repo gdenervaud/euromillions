@@ -98,7 +98,7 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
             <ul ref={scrollIntoViewRef}>
               {draws.map((draw, index) => (
                 <li key={`${draw.date}-${index}`} >
-                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} favoritesFilter={favoritesFilter} />
+                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} favoritesFilter={hasFavorites?favoritesFilter:null} />
                 </li>
               ))}
             </ul>
