@@ -19,6 +19,23 @@ class StatsHelpers {
   }
 }
 
+export const isMatching = (list, filter, values) => {
+  if (!filter) {
+    return true;
+  }
+  if (!Array.isArray(values) || !values.length) {
+    return false;
+  }
+  const numbers = new Set(Array.isArray(list)?list:[list]);
+  if (filter === "some") {
+    return values.some(value => numbers.has(value));
+  }
+  if (filter === "all") {
+    return values.every(value => numbers.has(value));
+  }
+  return true;
+};
+
 export const toDateString = date => date instanceof Date?`${date.getFullYear()}-${date.getMonth() < 9?"0":""}${date.getMonth() + 1}-${date.getDate() < 10?"0":""}${date.getDate()}`:"";
 
 export const getUpdatedList = (list, number, add) => {

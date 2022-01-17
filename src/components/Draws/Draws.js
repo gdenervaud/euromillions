@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { Favorites } from "./Favorites";
+import Toggle from "../Toggle";
 
 const useStyles = createUseStyles({
   container: {
@@ -23,17 +24,17 @@ const useStyles = createUseStyles({
       }
     }
   },
+  favoritesFilter: {
+    padding: "20px 20px 0px 20px"
+  },
   draws: {
-    padding: "0 20px 20px 20px",
+    padding: "0 20px",
     "& > ul": {
       listStyleType: "none",
       margin: 0,
       padding: 0,
       "& > li": {
-        display: "block",
-        "& + li ": {
-          marginTop: "20px"
-        }
+        display: "block"
       }
     }
   }
@@ -45,10 +46,46 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
 
   const scrollIntoViewRef = useRef();
 
+  const [favoritesFilter, setFavoritesFilter] = useState(null);
+
+  const hasFavorites = Array.isArray(favorites) && favorites.some(f => Array.isArray(f.list) && f.list.length);
+
   return (
     <div className={classes.container}>
       <div>
-        <Favorites favorites={favorites} onReset={onResetFavorites} />
+        {hasFavorites && (
+          <>
+            <Favorites favorites={favorites} onReset={onResetFavorites} />
+            <Toggle
+              className={classes.favoritesFilter}
+              value={favoritesFilter}
+              items={[
+                {
+                  value: "all",
+                  label: "Afficher uniquement les tirages contenant tous les favoris",
+                  icon: "star",
+                  activeColor: "yellow",
+                  inactiveColor: "rgb(224, 224, 224)"
+                },
+                {
+                  value: "some",
+                  label: "Afficher uniquement les tirages contenant un favoris",
+                  icon: "star-half-alt",
+                  activeColor: "yellow",
+                  inactiveColor: "rgb(224, 224, 224)"
+                },
+                {
+                  value: null,
+                  label: "Afficher tous les tirages",
+                  icon: "times",
+                  activeColor: "red",
+                  inactiveColor: "rgb(224, 224, 224)"
+                }
+              ]}
+              onChange={setFavoritesFilter}
+            />
+          </>
+        )}
       </div>
       <div className={classes.header}>
         {canEdit && (
@@ -61,7 +98,7 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
             <ul ref={scrollIntoViewRef}>
               {draws.map((draw, index) => (
                 <li key={`${draw.date}-${index}`} >
-                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} />
+                  <DrawComponent draw={draw} favorites={favorites} canEdit={canEdit} onSave={onSaveDraw} onDelete={onDeleteDraw} favoritesFilter={favoritesFilter} />
                 </li>
               ))}
             </ul>

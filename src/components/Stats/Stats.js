@@ -82,6 +82,7 @@ const useStyles = createUseStyles({
       cursor: "text"
     }
   },
+  toggle: {},
   stats: {
     padding: "0 20px 20px 20px",
     "& > div + div": {
@@ -152,8 +153,6 @@ export const Stats = ({ draws, series}) => {
     }
   };
 
-  const handleShowOnlyFavorites = (_, value) => setShowOnlyFavorites(!!value);
-
   const hasFavorites = series.some(serie => !!serie.favorites.length);
 
   const classes = useStyles();
@@ -165,11 +164,24 @@ export const Stats = ({ draws, series}) => {
         <TrendDateSelector draws={draws} date={trendDate} onChange={setTrendDate} />
         {hasFavorites && (
           <Toggle
-            className={classes.toggle}
-            option={{value: showOnlyFavorites?true:undefined}}
-            label="Afficher uniquement les favoris"
-            show={true}
-            onChange={handleShowOnlyFavorites}
+            value={showOnlyFavorites}
+            items={[
+              {
+                value: true,
+                label: "Afficher uniquement les favoris",
+                icon: "star",
+                activeColor: "yellow",
+                inactiveColor: "rgb(224, 224, 224)"
+              },
+              {
+                value: false,
+                label: "Afficher tous les numéros",
+                icon: "times",
+                activeColor: "red",
+                inactiveColor: "rgb(224, 224, 224)"
+              }
+            ]}
+            onChange={setShowOnlyFavorites}
           />
         )}
       </div>

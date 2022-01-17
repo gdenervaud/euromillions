@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 
-import { getUpdatedList } from "../../helpers/DrawHelper";
+import { getUpdatedList, isMatching } from "../../helpers/DrawHelper";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
 import { Draw as DrawComponent } from "../Draws/Draw";
 
-export const Draw = ({ draw, favorites, canEdit, onSave, onDelete }) => {
+export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
   const [date, setDate] = useState(draw.date);
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [chance, setChance] = useState(draw.chance);
+
+  const isMathingNumbers = isMatching(numbers, favoritesFilter, favorites[0].list);
+  const isMathingChance = isMatching(chance, favoritesFilter, favorites[1].list);
+  const isMatchingFilter = isMathingNumbers || isMathingChance;
+
+  if (readOnly && !isMatchingFilter) {
+    return null;
+  }
 
   const handleDateChange = date => {
     setDate(date);
@@ -100,6 +108,7 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete }) => {
       onSave={handleSave}
       onDelete={handleDelete}
       onCancelEdit={handleCancelEdit}
+      favoritesFilter={favoritesFilter}
     />
   );
 };

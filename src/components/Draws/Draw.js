@@ -9,6 +9,7 @@ const useStyles = createUseStyles({
     position: "relative",
     width: "100% ",
     height: "100%",
+    marginBottom: "20px",
     padding: "10px 5px",
     border: "1px solid #dee2e6",
     borderRadius: "4px",

@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 
-import { getUpdatedList } from "../../helpers/DrawHelper";
+import { getUpdatedList, isMatching } from "../../helpers/DrawHelper";
 import { Draw as DrawComponent } from "../Draws/Draw";
 import { Number } from "./Number";
 import { Star } from "./Star";
 import { SwissWin } from "./SwissWin";
 
-export const Draw = ({ draw, favorites, canEdit, onSave, onDelete }) => {
+export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
   const [date, setDate] = useState(draw.date);
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [stars, setStars] = useState([...draw.stars]);
   const [swissWin, setSwissWin] = useState([...draw.swissWin]);
+
+  const isMathingNumbers = isMatching(numbers, favoritesFilter, favorites[0].list);
+  const isMathingStars = isMatching(stars, favoritesFilter, favorites[1].list);
+  const isMathingSwissWin = isMatching(swissWin, favoritesFilter, favorites[2].list);
+  const isMatchingFilter = isMathingNumbers || isMathingStars || isMathingSwissWin;
+
+  if (readOnly && !isMatchingFilter) {
+    return null;
+  }
 
   const handleDateChange = date => {
     setDate(date);

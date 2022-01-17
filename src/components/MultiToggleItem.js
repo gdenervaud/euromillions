@@ -14,17 +14,10 @@ const useStyles = createUseStyles({
       cursor:"pointer"
     },
     "&.selected":{
-      background:"#141618",
+      background:"#454545",
       borderRadius:"50%",
       transform:"scale(1.12)",
       fontSize:"0.8em",
-      /*backgroundColor:"currentColor",
-      "& svg":{
-        color:"white"
-      },*/
-      "&.noscale":{
-        transform:"scale(1)"
-      },
       "& svg": {
         transform:"scale(1.6)"
       }
@@ -35,11 +28,9 @@ const useStyles = createUseStyles({
   }
 });
 
-const MultiToggleItem = ({ selectedValue, value, color, icon, noscale, onSelect }) => {
+const MultiToggleItem = ({ selectedValue, value, icon, activeColor, inactiveColor, onSelect }) => {
 
   const classes = useStyles();
-
-  const isReadOnly = typeof onSelect !== "function";
 
   const handleClick = () => {
     if(typeof onSelect === "function") {
@@ -47,10 +38,12 @@ const MultiToggleItem = ({ selectedValue, value, color, icon, noscale, onSelect 
     }
   };
 
-  const className = `${classes.container}${selectedValue === value?" selected":""}${noscale !== undefined?" noscale":""} ${isReadOnly?"readOnly":""}`;
+  const isSelected = selectedValue === value;
 
-  return(
-    <div onClick={isReadOnly?null:handleClick} className={className} style={{color: color}}>
+  const color = isSelected?activeColor:inactiveColor;
+
+  return (
+    <div onClick={handleClick} className={`${classes.container} ${isSelected?"selected":""}`} style={{color: color}}>
       <FontAwesomeIcon icon={icon || "dot-circle"}/>
     </div>
   );
