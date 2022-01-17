@@ -23,6 +23,17 @@ const useStyles = createUseStyles({
     paddingBottom: "20px",
     "&.readOnly": {
       paddingBottom: "10px",
+      "& $label:after": {
+        content: "\" \"",
+        display: "block",
+        position: "absolute",
+        width: "20px",
+        height: "16px",
+        left: "198px",
+        top: "6px",
+        background: "white",
+        zIndex: 1
+      }
     }
   },
   label: {
