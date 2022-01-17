@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const useStyles = createUseStyles({
   container:{
     textAlign:"center",
-    height:"24px",
-    lineHeight:"24px",
+    height:"34px",
+    lineHeight:"34px",
     fontSize:"0.66em",
     transition:"all .2s ease",
     background:"none",
@@ -23,8 +23,14 @@ const useStyles = createUseStyles({
         color:"white"
       },*/
       "&.noscale":{
-        transform:"scale(1)",
+        transform:"scale(1)"
+      },
+      "& svg": {
+        transform:"scale(1.6)"
       }
+    },
+    "& svg": {
+      transform:"translateY(-1px) scale(1.6)"
     }
   }
 });
