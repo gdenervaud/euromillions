@@ -26,6 +26,9 @@ export const isMatching = (list, filter, values) => {
   if (!Array.isArray(values) || !values.length) {
     return false;
   }
+  if (!list) {
+    return false;
+  }
   const numbers = new Set(Array.isArray(list)?list:[list]);
   if (filter === "some") {
     return values.some(value => numbers.has(value));

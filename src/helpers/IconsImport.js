@@ -15,6 +15,7 @@ import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons/faSignOutAlt";
 import {faUsers} from "@fortawesome/free-solid-svg-icons/faUsers";
 import {faArrowRight} from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import {faDotCircle} from "@fortawesome/free-solid-svg-icons/faDotCircle";
+import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 
 library.add(
   faHome,
@@ -31,5 +32,6 @@ library.add(
   faSignOutAlt,
   faUsers,
   faArrowRight,
-  faDotCircle
+  faDotCircle,
+  faExclamationTriangle
 );

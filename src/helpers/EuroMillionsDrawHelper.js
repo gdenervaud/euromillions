@@ -1,8 +1,7 @@
 
 import { Timestamp, serverTimestamp } from "firebase/firestore";
 
-
-import { toDateString } from "./DrawHelper";
+import { toDateString, isMatching } from "./DrawHelper";
 
 export class EuroMillionsDraw {
   constructor (id, date, numbers, stars, swissWin, lastUpdated) {
@@ -39,4 +38,20 @@ export const euroMillionsDrawConverter = {
     const data = snapshot.data(options);
     return new EuroMillionsDraw(data.id, toDateString(data.date.toDate()), data.numbers, data.stars, data.swissWin, data.lastUpdated.toDate());
   }
+};
+
+export const isDrawMatching = (draw, favoritesFilter, favorites) => {
+  if (!Array.isArray(favorites) || favorites.length !== 3) {
+    return false;
+  }
+  if (!draw) {
+    return false;
+  }
+  if (isMatching(draw.numbers, favoritesFilter, favorites[0].list)) {
+    return true;
+  }
+  if (isMatching(draw.stars, favoritesFilter, favorites[1].list)) {
+    return true;
+  }
+  return isMatching(draw.swissWin, favoritesFilter, favorites[2].list);
 };

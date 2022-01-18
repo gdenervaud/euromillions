@@ -2,7 +2,7 @@
 import { Timestamp, serverTimestamp } from "firebase/firestore";
 
 
-import { toDateString } from "./DrawHelper";
+import { toDateString, isMatching } from "./DrawHelper";
 
 export class SwissLottoDraw {
   constructor (id, date, numbers, chance, lastUpdated) {
@@ -36,4 +36,17 @@ export const swissLottoDrawConverter = {
     const data = snapshot.data(options);
     return new SwissLottoDraw(data.id, toDateString(data.date.toDate()), data.numbers, data.chance, data.lastUpdated.toDate());
   }
+};
+
+export const isDrawMatching = (draw, favoritesFilter, favorites) => {
+  if (!Array.isArray(favorites) || favorites.length !== 2) {
+    return false;
+  }
+  if (!draw) {
+    return false;
+  }
+  if (isMatching(draw.numbers, favoritesFilter, favorites[0].list)) {
+    return true;
+  }
+  return isMatching(draw.chance, favoritesFilter, favorites[2].list);
 };

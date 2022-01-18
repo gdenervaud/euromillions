@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
-import { getUpdatedList, isMatching } from "../../helpers/DrawHelper";
+import { getUpdatedList } from "../../helpers/DrawHelper";
+import { isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
+
 import { Draw as DrawComponent } from "../Draws/Draw";
 import { Number } from "./Number";
 import { Star } from "./Star";
@@ -14,12 +16,7 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
   const [stars, setStars] = useState([...draw.stars]);
   const [swissWin, setSwissWin] = useState([...draw.swissWin]);
 
-  const isMathingNumbers = isMatching(numbers, favoritesFilter, favorites[0].list);
-  const isMathingStars = isMatching(stars, favoritesFilter, favorites[1].list);
-  const isMathingSwissWin = isMatching(swissWin, favoritesFilter, favorites[2].list);
-  const isMatchingFilter = isMathingNumbers || isMathingStars || isMathingSwissWin;
-
-  if (readOnly && !isMatchingFilter) {
+  if (readOnly && !isDrawMatching(draw, favoritesFilter, favorites)) {
     return null;
   }
 

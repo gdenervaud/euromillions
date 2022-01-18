@@ -12,7 +12,7 @@ import { SwissWin } from "./SwissWin";
 import { getUpdatedList } from "../../helpers/DrawHelper";
 import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
 import { toDateString } from "../../helpers/DrawHelper";
-import { EuroMillionsDraw, euroMillionsDrawConverter } from "../../helpers/EuroMillionsDrawHelper";
+import { EuroMillionsDraw, euroMillionsDrawConverter, isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
 // import { draws as defaultDraws } from "../../data/euroMillionsDraws";
 
 const EuroMillionsLocalStorageKey = "EuroMillions";
@@ -106,7 +106,7 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
   return (
     <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} />
+        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
         :
         <Stats draws={draws} favorites={fav} />
       }

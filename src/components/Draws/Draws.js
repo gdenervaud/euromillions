@@ -37,10 +37,18 @@ const useStyles = createUseStyles({
         display: "block"
       }
     }
+  },
+  noDraws: {
+    padding: "20px",
+    textAlign: "center"
+  },
+  noDrawsMatching: {
+    padding: "20px",
+    textAlign: "center"
   }
 });
 
-export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw, onResetFavorites }) => {
+export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onSaveDraw, onDeleteDraw, onResetFavorites, isDrawMatching }) => {
 
   const classes = useStyles();
 
@@ -48,12 +56,16 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
 
   const [favoritesFilter, setFavoritesFilter] = useState(null);
 
+  const hasDraws = Array.isArray(draws) && !!draws.length;
+
   const hasFavorites = Array.isArray(favorites) && favorites.some(f => Array.isArray(f.list) && f.list.length);
+
+  const hasFilteredDraws =  !hasDraws || !hasFavorites || draws.some(draw => isDrawMatching(draw, favoritesFilter, favorites));
 
   return (
     <div className={classes.container}>
       <div>
-        {hasFavorites && (
+        {hasDraws && hasFavorites && (
           <>
             <Favorites favorites={favorites} onReset={onResetFavorites} />
             <Toggle
@@ -62,21 +74,21 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
               items={[
                 {
                   value: "all",
-                  label: "Afficher uniquement les tirages contenant tous les favoris",
+                  label: "Les tirages avec tous les favoris",
                   icon: "star",
                   activeColor: "yellow",
                   inactiveColor: "rgb(224, 224, 224)"
                 },
                 {
                   value: "some",
-                  label: "Afficher uniquement les tirages contenant un favoris",
+                  label: "Les tirages avec au moins un favoris",
                   icon: "star-half-alt",
                   activeColor: "yellow",
                   inactiveColor: "rgb(224, 224, 224)"
                 },
                 {
                   value: null,
-                  label: "Afficher tous les tirages",
+                  label: "Tous les tirages",
                   icon: "times",
                   activeColor: "red",
                   inactiveColor: "rgb(224, 224, 224)"
@@ -95,6 +107,16 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
       <div>
         <Scrollbars autoHide>
           <div className={classes.draws} >
+            {!hasDraws && (
+              <div className={classes.noDraws}>
+                <FontAwesomeIcon icon={"exclamation-triangle"} /> Aucun tirage
+              </div>
+            )}
+            {!hasFilteredDraws && (
+              <div className={classes.noDrawsMatching}>
+                <FontAwesomeIcon icon={"exclamation-triangle"} /> Aucun tirage ne correspond au filtre
+              </div>
+            )}
             <ul ref={scrollIntoViewRef}>
               {draws.map((draw, index) => (
                 <li key={`${draw.date}-${index}`} >

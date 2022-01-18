@@ -9,7 +9,7 @@ import { Stats } from "./Stats";
 import { getUpdatedList } from "../../helpers/DrawHelper";
 import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
 import { toDateString } from "../../helpers/DrawHelper";
-import { SwissLottoDraw, swissLottoDrawConverter } from "../../helpers/SwissLottoDrawHelper";
+import { SwissLottoDraw, swissLottoDrawConverter, isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
 // import { draws as defaultDraws } from "../../data/swissLottoDraws";
@@ -104,7 +104,7 @@ const SwissLotto = ({ db, dbCollection, canEdit }) => {
   return (
     <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} >
       {view !== "STATS"?
-        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} />
+        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
         :
         <Stats draws={draws} favorites={fav} />
       }

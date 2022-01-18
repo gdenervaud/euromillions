@@ -168,14 +168,14 @@ export const Stats = ({ draws, series}) => {
             items={[
               {
                 value: true,
-                label: "Afficher uniquement les favoris",
+                label: "Uniquement les favoris",
                 icon: "star",
                 activeColor: "yellow",
                 inactiveColor: "rgb(224, 224, 224)"
               },
               {
                 value: false,
-                label: "Afficher tous les numéros",
+                label: "Tous les numéros",
                 icon: "times",
                 activeColor: "red",
                 inactiveColor: "rgb(224, 224, 224)"
