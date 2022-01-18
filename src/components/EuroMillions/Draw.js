@@ -11,6 +11,8 @@ import { SwissWin } from "./SwissWin";
 export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter }) => {
 
   const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [date, setDate] = useState(draw.date);
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [stars, setStars] = useState([...draw.stars]);
@@ -43,31 +45,37 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
     setReadOnly(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     draw.date = date;
     draw.numbers = numbers;
     draw.stars = stars;
     draw.swissWin = swissWin;
     setReadOnly(true);
-    onSave(draw);
+    setIsSaving(true);
+    await onSave(draw);
+    setIsSaving(false);
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setStars([...draw.stars]);
     setSwissWin([...draw.swissWin]);
     setReadOnly(true);
-    onDelete(draw);
+    setIsDeleting(true);
+    await onDelete(draw);
+    //setIsDeleting(false);
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = async () => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setStars([...draw.stars]);
     setSwissWin([...draw.swissWin]);
     setReadOnly(true);
     if (!draw.lastUpdated) {
-      onDelete(draw);
+      setIsDeleting(true);
+      await onDelete(draw);
+      //setIsDeleting(false);
     }
   };
 
@@ -125,6 +133,8 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       onSave={handleSave}
       onDelete={handleDelete}
       onCancelEdit={handleCancelEdit}
+      isSaving={isSaving}
+      isDeleting={isDeleting}
     />
   );
 };

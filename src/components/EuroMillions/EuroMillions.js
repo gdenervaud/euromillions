@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import _  from "lodash-uuid";
 
 import { Tabs } from "../Tabs";
+import { Loader } from "../Loader";
 import { Draws } from "../Draws/Draws";
 import { Draw } from "./Draw";
 import { Stats } from "./Stats";
@@ -37,6 +38,8 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
 
   const [favorites, setFavorites] = useState(saved_favorite);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const tabs = [
     {
       name: "Tirages",
@@ -64,6 +67,7 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
       //   delete c.lastUpdated;
       //   return c;
       // })));
+      setIsLoading(false);
     });
   }, [db, dbCollection]);
 
@@ -105,10 +109,13 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
 
   return (
     <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >
-      {view !== "STATS"?
-        <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
+      {isLoading?
+        <Loader text="Récupération des tirages Euro Millions..." shadow={false} />
         :
-        <Stats draws={draws} favorites={fav} />
+        view !== "STATS"?
+          <Draws draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
+          :
+          <Stats draws={draws} favorites={fav} />
       }
     </Tabs>
   );

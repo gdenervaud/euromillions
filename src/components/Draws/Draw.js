@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { Loader } from "../Loader";
 import { Value } from "../Value";
 
 const useStyles = createUseStyles({
@@ -159,7 +160,9 @@ export const Draw = ({
   onEdit,
   onSave,
   onDelete,
-  onCancelEdit
+  onCancelEdit,
+  isSaving,
+  isDeleting
 }) => {
 
   const [deleteMode, setDeleteMode] = useState(false);
@@ -176,7 +179,7 @@ export const Draw = ({
       <div className={`${classes.drawHead} ${readOnly?"readOnly":""}`} >
         <span className={classes.label}>Tirage du </span>
         <input className={`form-check-input ${classes.date}`} type="date" value={date} onChange={e => onDateChange(e.target.value)} readOnly={readOnly} />
-        {readOnly && canEdit && (
+        {readOnly && canEdit && !isSaving && !isDeleting && (
           <button className={classes.editBtn} type="button" onClick={onEdit}><FontAwesomeIcon icon={"pencil-alt"} title={"editer le tirage"} /></button>
         )}
       </div>
@@ -204,6 +207,12 @@ export const Draw = ({
             <button className="btn btn-primary" type="button" onClick={onSave}><FontAwesomeIcon icon="check" title="sauvegarder le tirage" /> Sauvegarder</button>
           </div>
         </>
+      )}
+      {isSaving && (
+        <Loader text="Sauvergarde du tirage..." />
+      )}
+      {isDeleting && (
+        <Loader text="Suppression du tirage..." />
       )}
     </div>
   );
