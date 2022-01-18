@@ -82,7 +82,12 @@ const useStyles = createUseStyles({
       cursor: "text"
     }
   },
-  toggle: {},
+  favoritesToggle: {
+    marginTop: "25px !important",
+    "@media screen and (min-width:768px)": {
+      marginTop: "0px !important",
+    }
+  },
   stats: {
     padding: "0 20px 20px 20px",
     "& > div + div": {
@@ -164,6 +169,7 @@ export const Stats = ({ draws, series}) => {
         <TrendDateSelector draws={draws} date={trendDate} onChange={setTrendDate} />
         {hasFavorites && (
           <Toggle
+            className={classes.favoritesToggle}
             value={showOnlyFavorites}
             items={[
               {
