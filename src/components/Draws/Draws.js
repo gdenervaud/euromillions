@@ -16,19 +16,25 @@ const useStyles = createUseStyles({
     gridTemplateColumns: "1fr"
   },
   header: {
-    padding: "20px",
+    padding: "20px 10px 15px 10px",
     "& > button": {
       padding: "0.65rem 0.75rem",
       "@media screen and (min-width:1024px)": {
-        padding: "0.375rem 0.75rem",
+        padding: "0.375rem 0.75rem"
       }
+    },
+    "@media screen and (min-width:1024px)": {
+      padding: "20px"
     }
   },
   favoritesFilter: {
-    padding: "20px 20px 0px 20px"
+    padding: "20px 10px 0px 10px",
+    "@media screen and (min-width:1024px)": {
+      padding: "20px 20px 0px 20px"
+    }
   },
   draws: {
-    padding: "0 20px",
+    padding: "0 10px",
     "& > ul": {
       listStyleType: "none",
       margin: 0,
@@ -36,6 +42,9 @@ const useStyles = createUseStyles({
       "& > li": {
         display: "block"
       }
+    },
+    "@media screen and (min-width:1024px)": {
+      padding: "0 20px",
     }
   },
   noDraws: {

@@ -6,17 +6,17 @@ import { Star as Component } from "../Star";
 const useStyles = createUseStyles({
   star: {
     "& svg": {
-      color: "white"
+      color: "white !important"
     },
     "& div": {
-      color: "#eebb05"
+      color: "#eebb05 !important"
     },
     "&.checked": {
       "& svg": {
-        color: "#eebb05"
+        color: "#eebb05 !important"
       },
       "& div": {
-        color: "white"
+        color: "white !important"
       }
     }
   }

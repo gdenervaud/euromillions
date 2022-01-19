@@ -135,6 +135,7 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       onCancelEdit={handleCancelEdit}
       isSaving={isSaving}
       isDeleting={isDeleting}
+      theme={{color: "#1f485e"}}
     />
   );
 };

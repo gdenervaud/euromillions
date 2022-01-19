@@ -5,13 +5,14 @@ import { Number as Component } from "../Number";
 
 const useStyles = createUseStyles({
   number: {
-    borderRadius: 0,
-    backgroundColor: "white",
-    color: "red",
-    boxShadow: "0 5px 10px 0 hsl(0deg 0% 75% / 50%)",
+    borderRadius: "0 !important",
+    backgroundColor: "white !important",
+    color: "red !important",
+    boxShadow: "0 5px 10px 0 hsl(0deg 0% 75% / 50%) !important",
     "&.checked": {
-      backgroundColor: "#001367",
-      color: "white"
+      borderRadius: "50% !important",
+      backgroundColor: "#c60b12 !important",//"#001367",
+      color: "white !important"
     }
   }
 });
