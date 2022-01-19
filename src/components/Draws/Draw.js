@@ -10,7 +10,7 @@ const useStyles = createUseStyles(theme => ({
     position: "relative",
     width: "100% ",
     height: "100%",
-    marginBottom: "10px",
+    marginBottom: "15px",
     overflow: "hidden",
     "&.readOnly": {
       "& $header $label:after": {
@@ -59,6 +59,7 @@ const useStyles = createUseStyles(theme => ({
     border: "1px solid black",
     borderRadius: "2px",
     backgroundColor: "white",
+    lineHeight: "20px",
     "&[readOnly]": {
       padding: 0,
       border: 0,
