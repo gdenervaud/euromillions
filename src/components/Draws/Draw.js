@@ -150,6 +150,12 @@ const useStyles = createUseStyles(theme => ({
     },
     "& $list": {
       paddingTop: "5px"
+    },
+    "&.inline": {
+      display: "inline",
+      "& ul": {
+        display: "inline"
+      }
     }
   }
 }));
@@ -189,8 +195,8 @@ export const Draw = ({
         )}
       </div>
       <div className={classes.body} >
-        {lists.map(({items, itemComponent, onItemClick, onItemFavorite}, index) =>
-          <div key={index} className={classes.list}>
+        {lists.map(({items, itemComponent, onItemClick, onItemFavorite, inline}, index) =>
+          <div key={index} className={`${classes.list} ${(readOnly && inline)?"inline":""}`}>
             <ul>
               {!!items.length && items.map(item => (
                 <li key={item.value}>

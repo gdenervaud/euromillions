@@ -91,13 +91,15 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       items: listOfNumbers,
       itemComponent: Number,
       onItemClick: handleNumberClick,
-      onItemFavorite: favorites[0].onItemToggle
+      onItemFavorite: favorites[0].onItemToggle,
+      inline: true
     },
     {
       items: listOfChances,
       itemComponent: Chance,
       onItemClick: handleChanceClick,
-      onItemFavorite: favorites[1].onItemToggle
+      onItemFavorite: favorites[1].onItemToggle,
+      inline: true
     }
   ];
 
