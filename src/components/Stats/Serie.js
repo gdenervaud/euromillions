@@ -39,9 +39,9 @@ const SerieComponent =  ({ rows, onFavoriteToggle, sortAscending, sortCriteria, 
 };
 
 
-export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onFavoriteToggle, date, trendDate, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
+export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
 
-  const values = getValuesStats(maxValue, draws, getValue, date, trendDate);
+  const values = getValuesStats(maxValue, draws, getValue, period, smoothing);
   const rows = sortValuesStats(values, sortCriteria, sortAscending)
     .map(row => (
       {

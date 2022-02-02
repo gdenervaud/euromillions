@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { getDates } from "../../helpers/DrawHelper";
+import { getPeriods, getSmoothings } from "../../helpers/DrawHelper";
 import Toggle from "../Toggle";
 import { Favorites } from "./Favorites";
 import { Serie } from "./Serie";
@@ -105,7 +105,7 @@ const Selector = ({title, value, list, onChange}) => {
 
   const classes = useStyles();
 
-  const handleChange = e => onChange(e.target.value);
+  const handleChange = e => onChange(Number.parseInt(e.target.value));
 
   return (
     <div className={classes.selector}>
@@ -119,21 +119,21 @@ const Selector = ({title, value, list, onChange}) => {
   );
 };
 
-const DateSelector = ({className, draws, date, onChange}) => {
+const PeriodSelector = ({draws, period, onChange}) => {
 
-  const dates = getDates(draws, [1,2,3,4,5,10,15,20,30,50,100], true);
+  const periods = getPeriods(draws, [1,2,3,4,5,10,15,20,30,50,100], true);
 
   return (
-    <Selector title="Période" value={date} list={dates} onChange={onChange} />
+    <Selector title="Période" value={period} list={periods} onChange={onChange} />
   );
 };
 
-const TrendDateSelector = ({className, draws, date, onChange}) => {
+const SmoothingSelector = ({draws, smoothing, onChange}) => {
 
-  const dates =  getDates(draws, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], false);
+  const smoothings =  getSmoothings(draws, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], false);
 
   return (
-    <Selector title="Tendance" value={date} list={dates} onChange={onChange} />
+    <Selector title="Lissage" value={smoothing} list={smoothings} onChange={onChange} />
   );
 };
 
@@ -141,8 +141,8 @@ export const Stats = ({ draws, series}) => {
 
   const drawsByDate = draws.sort((a, b) => a.date - b.date);
 
-  const [date, setDate] = useState("");
-  const [trendDate, setTrendDate] = useState(drawsByDate.length > 5?drawsByDate[5].date:drawsByDate.length?drawsByDate[drawsByDate.length-1].date:"");
+  const [period, setPeriod] = useState(drawsByDate.length);
+  const [smoothing, setSmoothing] = useState(drawsByDate.length > 5?6:drawsByDate.length);
 
   const [sortAscending, setSortAscending] = useState(true);
   const [sortCriteria, setSortCriteria] = useState("value");
@@ -165,8 +165,8 @@ export const Stats = ({ draws, series}) => {
   return (
     <div className={classes.container}>
       <div className={classes.header} >
-        <DateSelector draws={draws} date={date} onChange={setDate} />
-        <TrendDateSelector draws={draws} date={trendDate} onChange={setTrendDate} />
+        <PeriodSelector draws={draws} period={period} onChange={setPeriod} />
+        <SmoothingSelector draws={draws} smoothing={smoothing} onChange={setSmoothing} />
         {hasFavorites && (
           <Toggle
             className={classes.favoritesToggle}
@@ -199,7 +199,7 @@ export const Stats = ({ draws, series}) => {
                 {!showOnlyFavorites && (
                   <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
                 )}
-                <Serie draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} date={date} trendDate={trendDate} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
+                <Serie draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
               </div>
             ))}
           </div>

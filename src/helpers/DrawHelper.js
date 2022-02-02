@@ -57,13 +57,30 @@ export const getUpdatedList = (list, number, add) => {
   return result;
 };
 
-export const getDates = (draws, whiteList, includeAll) => {
+export const getPeriods = (draws, whiteList, includeAll) => {
   const dates = draws.reduce((acc, draw, idx) => {
     const index = idx + 1;
     if (whiteList.includes(index)) {
       acc.push({
         name: `depuis ${index > 1?"les " + index + " derniers tirages":"le dernier tirage"} (${new Date(draw.date).toLocaleDateString()})`,
-        value: draw.date
+        value: index
+      });
+    }
+    return acc;
+  }, includeAll?[{
+    name: "pour l'ensemble des tirages",
+    value: draws.length
+  }]:[]);
+  return dates;
+};
+
+export const getSmoothings = (draws, whiteList, includeAll) => {
+  const dates = draws.reduce((acc, draw, idx) => {
+    const index = idx + 1;
+    if (whiteList.includes(index)) {
+      acc.push({
+        name: `sur ${index} tirage${index > 1?"s":""}`,
+        value: index
       });
     }
     return acc;
@@ -74,61 +91,68 @@ export const getDates = (draws, whiteList, includeAll) => {
   return dates;
 };
 
-export const getValuesStats = (maxValue, draws, getDrawValues, date, trendDate) => {
+export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing) => {
+
+  const drawsByDate = draws.sort((a, b) => a.date - b.date);
 
   const values = Array.from(Array(maxValue)).map((_, index) => index+1).reduce((acc,index) => {
     acc.set(index, {
       success: 0,
-      trendSuccess: 0
+      sma: Array.from(Array(period)).map((_, index) => ({
+        success: 0,
+        trend: 0,
+        date: drawsByDate[index].date
+      }))
     });
     return acc;
   }, new Map());
 
-  const drawsForTrend = draws.filter(draw => draw.date >= trendDate);
-  drawsForTrend.forEach(draw => {
+  for (let i=0; i<period + smoothing && i<drawsByDate.length; i++) {
+    const draw = drawsByDate[i];
     const vals = getDrawValues(draw);
     vals.forEach(value => {
       const counters = values.get(value);
-      counters.trendSuccess += 1;
+      if (i<period) {
+        counters.success += 1;
+      }
+      for (let j=i; j>i-smoothing && j>=0; j--) {
+        counters.sma[j].success += 1;
+      }
+    });
+  }
+
+  Array.from(Array(period)).forEach((_, index) => {
+    const vals = Array.from(values).map(([_, v]) => v.sma[index].success);
+    const average = StatsHelpers.average(vals);
+    const standardDeviation = StatsHelpers.standardDeviation(vals);
+    const above1 = average + standardDeviation;
+    const above2 = average + 2 * standardDeviation;
+    const below1 = average - standardDeviation;
+    const below2 = average - 2 * standardDeviation;
+    values.forEach(v => {
+      const sma = v.sma[index];
+      if (sma.success > above2) {
+        sma.trend = 2;
+      } else if (sma.success > above1) {
+        sma.trend = 1;
+      } else if (sma.success < below2) {
+        sma.trend = -2;
+      } else if (sma.success < below1) {
+        sma.trend = -1;
+      }
     });
   });
 
-  const drawsForPeriod = draws.filter(draw => draw.date >= date);
-  drawsForPeriod.forEach(draw => {
-    const vals = getDrawValues(draw);
-    vals.forEach(value => {
-      const counters = values.get(value);
-      counters.success += 1;
-    });
-  });
-
-  const trendPeriodSuccesses = Array.from(values).map(([_, {trendSuccess}]) => trendSuccess);
-  const average = StatsHelpers.average(trendPeriodSuccesses);
-  const standardDeviation = StatsHelpers.standardDeviation(trendPeriodSuccesses);
-  const above1 = average + standardDeviation;
-  const above2 = average + 2 * standardDeviation;
-  const below1 = average - standardDeviation;
-  const below2 = average - 2 * standardDeviation;
-
-  const result = Array.from(values).reduce((acc, [value, {success, trendSuccess}]) => {
-    let trend = 0;
-    if (trendSuccess > above2) {
-      trend = 2;
-    } else if (trendSuccess > above1) {
-      trend = 1;
-    } else if (trendSuccess < below2) {
-      trend = -2;
-    } else if (trendSuccess < below1) {
-      trend = -1;
-    }
-    const percentage =  Math.round((success / drawsForPeriod.length  + Number.EPSILON) * 100) / 100;
+  const result = Array.from(values).reduce((acc, [value, {success, sma}]) => {
+    const percentage =  Math.round((success / period  + Number.EPSILON) * 100) / 100;
     acc.push({
       value: value,
       success: success,
-      numberOfDraws: drawsForPeriod.length,
+      numberOfDraws: period,
       percentageOfSuccesses: percentage,
-      trendSuccess: trendSuccess,
-      trend: trend
+      trendSuccess: sma[0].success,
+      trend: sma[0].trend,
+      sma: sma
     });
     return acc;
   }, []);

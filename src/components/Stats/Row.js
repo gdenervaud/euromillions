@@ -1,9 +1,11 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Value } from "../Value";
+import { Bar } from "./Bar";
+import { TrendBar } from "./TrendBar";
+import { TrendArrow } from "./TrendArrow";
+
 
 const useStyles = createUseStyles({
   row: {
@@ -20,53 +22,43 @@ const useStyles = createUseStyles({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: "0 5px",
-    borderRadius: "100px"
-  },
-  bar: {
-    position: "relative",
-    width: 0,
-    height: "20px",
-    boxShadow: "0 10px 40px -10px #000",
     borderRadius: "100px",
-    background: "linear-gradient(to bottom, #A3E2EF 35%, #4F9CC0)"
-  },
-  barValue: {
-    position: "absolute",
-    top: "-2px",
-    left: "calc(100% + 6px)",
-    whiteSpace: "nowrap",
-    textAlign: "right",
-    "&.inside": {
-      left: "calc(100% - 10px)",
-      transform: "translateX(-100%)"
+    "& .bar": {
+      width: "100%",
+      transition: "width 0.3s ease-out"
+    },
+    "& .trend": {
+      width: "0%",
+      transition: "width 0.3s ease-out"
+    },
+    "&.show-trend": {
+      "& .bar": {
+        width: "0%"
+      },
+      "& .trend": {
+        width: "100%"
+      }
     }
   },
-  arrow: {
-    display: "inline-block",
-    marginLeft: "6px",
-    "&.arrow-trend2": {
-      transform: "rotate(-90deg)",
-      color: "lime"
-    },
-    "&.arrow-trend1": {
-      transform: "rotate(-45deg)",
-      color: "lime"
-    },
-    "&.arrow-trend-1": {
-      transform: "rotate(45deg)",
-      color: "red"
-    },
-    "&.arrow-trend-2": {
-      transform: "rotate(90deg)",
-      color: "red"
-    }
+  trendToggleBtn: {
+    cursor: "pointer"
   }
 });
 
-
-export const Row = ({ row: {value, success, numberOfDraws, percentageOfSuccesses, trend, isFavorite, Component}, onFavoriteToggle}) => {
+export const Row = ({ row: {value, success, numberOfDraws, percentageOfSuccesses, sma, trend, isFavorite, Component}, onFavoriteToggle}) => {
 
   const classes = useStyles();
+
+  const [showTrends, toggleTrends] = useState(false);
+  const [trends, setTrends] = useState(null);
+
+  const handleTrendToggle = () => {
+    const show = !showTrends;
+    if (show && !trends) {
+      setTrends(sma);
+    }
+    toggleTrends(show);
+  };
 
   return (
     <tr className={classes.row}>
@@ -74,16 +66,13 @@ export const Row = ({ row: {value, success, numberOfDraws, percentageOfSuccesses
         <Value Component={Component} value={value} checked={true} isFavorite={isFavorite} readOnly={true} onFavorite={onFavoriteToggle} />
       </td>
       <td style={{width: "100%"}}>
-        <div className={classes.barPnl}>
-          <div className={classes.bar} style={{width: `${percentageOfSuccesses * 100}%`}}>
-            <div className={`${classes.barValue} ${percentageOfSuccesses > 0.5?"inside":""}`}>{success} / {numberOfDraws}</div>
-          </div>
+        <div className={`${classes.barPnl} ${showTrends?"show-trend":""}`} >
+          <Bar className="bar" value={success} total={numberOfDraws} percentage={percentageOfSuccesses} />
+          <TrendBar className="trend" trends={trends} />
         </div>
       </td>
-      <td>
-        <div className={`${classes.arrow} arrow-trend${trend}`}>
-          <FontAwesomeIcon icon="arrow-right" size="2x" />
-        </div>
+      <td onClick={handleTrendToggle} className={classes.trendToggleBtn} title={showTrends?"voir le nombre de tirages à succès":"voir l'évolution de la tendance sur toute la période"}>
+        <TrendArrow trend={trend} />
       </td>
     </tr>
   );
