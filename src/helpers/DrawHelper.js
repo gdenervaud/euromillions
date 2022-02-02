@@ -107,16 +107,18 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
     return acc;
   }, new Map());
 
-  for (let i=0; i<period + smoothing && i<drawsByDate.length; i++) {
+  for (let i=0; i<period+smoothing-1 && i<drawsByDate.length; i++) {
     const draw = drawsByDate[i];
     const vals = getDrawValues(draw);
     vals.forEach(value => {
       const counters = values.get(value);
-      if (i<period) {
+      if (i < period) {
         counters.success += 1;
       }
-      for (let j=i; j>i-smoothing && j>=0; j--) {
-        counters.sma[j].success += 1;
+      for (let j=i; j >= i-smoothing+1 && j >= 0; j--) {
+        if (j < period) {
+          counters.sma[j].success += 1;
+        }
       }
     });
   }
@@ -148,7 +150,8 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
     acc.push({
       value: value,
       success: success,
-      numberOfDraws: period,
+      period: period,
+      smoothing: smoothing,
       percentageOfSuccesses: percentage,
       trendSuccess: sma[0].success,
       trend: sma[0].trend,

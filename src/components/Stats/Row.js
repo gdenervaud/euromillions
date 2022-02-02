@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
 import { Value } from "../Value";
@@ -45,12 +45,18 @@ const useStyles = createUseStyles({
   }
 });
 
-export const Row = ({ row: {value, success, numberOfDraws, percentageOfSuccesses, sma, trend, isFavorite, Component}, onFavoriteToggle}) => {
+export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, sma, trend, isFavorite, Component}, onFavoriteToggle}) => {
 
   const classes = useStyles();
 
   const [showTrends, toggleTrends] = useState(false);
   const [trends, setTrends] = useState(null);
+
+  useEffect(() => {
+    if (trends) {
+      setTrends(sma);
+    }
+  }, [trends, sma, period, smoothing]);
 
   const handleTrendToggle = () => {
     const show = !showTrends;
@@ -67,7 +73,7 @@ export const Row = ({ row: {value, success, numberOfDraws, percentageOfSuccesses
       </td>
       <td style={{width: "100%"}}>
         <div className={`${classes.barPnl} ${showTrends?"show-trend":""}`} >
-          <Bar className="bar" value={success} total={numberOfDraws} percentage={percentageOfSuccesses} />
+          <Bar className="bar" value={success} total={period} percentage={percentageOfSuccesses} />
           <TrendBar className="trend" trends={trends} />
         </div>
       </td>

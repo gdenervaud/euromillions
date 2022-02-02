@@ -57,7 +57,7 @@ export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, on
     onFavoriteToggle: onFavoriteToggle,
     sortAscending: sortAscending,
     sortCriteria: sortCriteria,
-    onSort: onSort
+    onSort: onSort,
   };
 
   return (

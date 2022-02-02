@@ -118,7 +118,7 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       favoritesFilter={favoritesFilter}
       isSaving={isSaving}
       isDeleting={isDeleting}
-      theme={{color: "#c60b12"}}
+      theme={{color: "#801010"}}
     />
   );
 };
