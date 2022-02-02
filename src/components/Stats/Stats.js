@@ -19,19 +19,23 @@ const useStyles = createUseStyles({
     gridTemplateColumns: "1fr"
   },
   header: {
-    padding: "20px",
+    padding: "10px",
     display: "flex",
     flexDirection: "column",
     "& > div + div": {
-      marginTop: "10px"
+      marginTop: "15px"
     },
     "@media screen and (min-width:768px)": {
+      padding: "10px 20px",
       flexDirection: "row",
       alignItems: "center",
       "& > div + div": {
         marginTop: 0,
         marginLeft: "20px"
       }
+    },
+    "@media screen and (min-width:1024px)": {
+      padding: "20px"
     }
   },
   selector: {
@@ -59,7 +63,7 @@ const useStyles = createUseStyles({
     display: "inline-block",
     minWidth: "100px",
     width: "100%",
-    padding: "0.375rem 20px 0.75rem 6px",
+    padding: "0.275rem 20px 0.35rem 6px",
     color: "#4d4d4d",
     border:"1px solid #4d4d4d",
     borderRadius: "2px",
@@ -83,15 +87,20 @@ const useStyles = createUseStyles({
     }
   },
   favoritesToggle: {
-    marginTop: "25px !important",
+    marginTop: "15px !important",
+    whiteSpace: "nowrap",
     "@media screen and (min-width:768px)": {
       marginTop: "0px !important",
     }
   },
   stats: {
-    padding: "0 20px 20px 20px",
+    padding: "0 10px 10px 10px",
+    overflowX: "hidden",
     "& > div + div": {
       marginTop: "20px"
+    },
+    "@media screen and (min-width:768px)": {
+      padding: "0 20px 20px 20px",
     }
   },
   serie: {
