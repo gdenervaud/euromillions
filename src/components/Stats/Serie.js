@@ -39,15 +39,16 @@ const SerieComponent =  ({ rows, onFavoriteToggle, sortAscending, sortCriteria, 
 };
 
 
-export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
+export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, smoothingMethod, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
 
   const values = getValuesStats(maxValue, draws, getValue, period, smoothing);
-  const rows = sortValuesStats(values, sortCriteria, sortAscending)
+  const rows = sortValuesStats(values, sortCriteria, sortAscending, smoothingMethod)
     .map(row => (
       {
         ...row,
         isFavorite: favorites.includes(row.value),
-        Component: itemComponent
+        Component: itemComponent,
+        smoothingMethod: smoothingMethod
       }
     ))
     .filter(row => (showOnlyFavorites && favorites.length)?row.isFavorite:true);

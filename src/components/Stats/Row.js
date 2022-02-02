@@ -45,26 +45,32 @@ const useStyles = createUseStyles({
   }
 });
 
-export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, sma, trend, isFavorite, Component}, onFavoriteToggle}) => {
+export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, trends, trend, smoothingMethod, isFavorite, Component}, onFavoriteToggle}) => {
 
   const classes = useStyles();
 
   const [showTrends, toggleTrends] = useState(false);
-  const [trends, setTrends] = useState(null);
+  const [isTrendsInitialized, setTrendsInitialized] = useState(false);
+  const [trendsBySmoothingMethod, setTrendsBySmoothingMethod] = useState(null);
+
+  const getTrends = (trendsBySmoothingMethod, smoothingMethod) => trendsBySmoothingMethod.map(t => t[smoothingMethod]);
 
   useEffect(() => {
-    if (trends) {
-      setTrends(sma);
+    if (isTrendsInitialized) {
+      setTrendsBySmoothingMethod(getTrends(trends, smoothingMethod));
     }
-  }, [trends, sma, period, smoothing]);
+  }, [trends, smoothingMethod, period, smoothing, isTrendsInitialized]);
 
   const handleTrendToggle = () => {
     const show = !showTrends;
-    if (show && !trends) {
-      setTrends(sma);
+    if (show && !isTrendsInitialized) {
+      setTrendsBySmoothingMethod(getTrends(trends, smoothingMethod));
+      setTrendsInitialized(true);
     }
     toggleTrends(show);
   };
+
+  const trendBySmoothingMethod = trend[smoothingMethod].trend;
 
   return (
     <tr className={classes.row}>
@@ -74,11 +80,11 @@ export const Row = ({ row: {value, success, period, smoothing, percentageOfSucce
       <td style={{width: "100%"}}>
         <div className={`${classes.barPnl} ${showTrends?"show-trend":""}`} >
           <Bar className="bar" value={success} total={period} percentage={percentageOfSuccesses} />
-          <TrendBar className="trend" trends={trends} />
+          <TrendBar className="trend" trends={trendsBySmoothingMethod} />
         </div>
       </td>
       <td onClick={handleTrendToggle} className={classes.trendToggleBtn} title={showTrends?"voir le nombre de tirages à succès":"voir l'évolution de la tendance sur toute la période"}>
-        <TrendArrow trend={trend} />
+        <TrendArrow trend={trendBySmoothingMethod} />
       </td>
     </tr>
   );
