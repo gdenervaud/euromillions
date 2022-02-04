@@ -13,6 +13,9 @@ const useStyles = createUseStyles({
       textAlign: "center"
     }
   },
+  lastSuccess: {
+    lineHeight: "1.2rem"
+  },
   barPnl: {
     background: "rgba(0,0,0,0.1)",
     position: "relative",
@@ -45,7 +48,7 @@ const useStyles = createUseStyles({
   }
 });
 
-export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, trends, trend, smoothingMethod, isFavorite, Component}, onFavoriteToggle}) => {
+export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, trends, trend, lastSuccess, smoothingMethod, isFavorite, Component}, onFavoriteToggle}) => {
 
   const classes = useStyles();
 
@@ -53,7 +56,10 @@ export const Row = ({ row: {value, success, period, smoothing, percentageOfSucce
   const [isTrendsInitialized, setTrendsInitialized] = useState(false);
   const [trendsBySmoothingMethod, setTrendsBySmoothingMethod] = useState(null);
 
-  const getTrends = (trendsBySmoothingMethod, smoothingMethod) => trendsBySmoothingMethod.map(t => t[smoothingMethod]);
+  const getTrends = (trendsBySmoothingMethod, smoothingMethod) => trendsBySmoothingMethod.map(t => ({
+    ...t[smoothingMethod],
+    date: t.date
+  }));
 
   useEffect(() => {
     if (isTrendsInitialized) {
@@ -76,6 +82,9 @@ export const Row = ({ row: {value, success, period, smoothing, percentageOfSucce
     <tr className={classes.row}>
       <td>
         <Value Component={Component} value={value} checked={true} isFavorite={isFavorite} readOnly={true} onFavorite={onFavoriteToggle} />
+      </td>
+      <td className={classes.lastSuccess}>
+        {lastSuccess === Number.POSITIVE_INFINITY?"jamais tiré":(lastSuccess > 1)?`${lastSuccess} tirages`:"le dernier tirage"}
       </td>
       <td style={{width: "100%"}}>
         <div className={`${classes.barPnl} ${showTrends?"show-trend":""}`} >

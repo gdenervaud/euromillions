@@ -12,8 +12,11 @@ const useStyles = createUseStyles({
     border: 0,
     background: "rgba(0,0,0,0.05)",
     transition: "all 0.3s ease-in-out",
+    fontSize: "0.65rem",
+    whiteSpace: "nowrap",
     "@media screen and (min-width:768px)": {
-      padding: "0.375rem 30px 0.65rem 0.75rem"
+      padding: "0.375rem 30px 0.65rem 0.75rem",
+      fontSize: "1rem",
     },
     "&:hover": {
       background: "rgba(0,0,0,0.075)",

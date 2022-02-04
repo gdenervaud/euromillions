@@ -105,7 +105,7 @@ export const TrendBar = ({ className, trends }) => {
   const values = trends.map((v, index) => ({
     from: index === trends.length-1?v.trend:trends[index+1].trend,
     to: v.trend,
-    title: `tirage du ${new Date(v.date).toLocaleDateString()}`
+    title: `Tirage du ${new Date(v.date).toLocaleDateString()}`
   })).reverse();
 
   return (

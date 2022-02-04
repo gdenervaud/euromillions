@@ -140,7 +140,8 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
           trend: 0
         },
         date: drawsByDate[index].date
-      }))
+      })),
+      lastSuccess: Number.POSITIVE_INFINITY
     });
     return acc;
   }, new Map());
@@ -152,6 +153,9 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
       const counters = values.get(value);
       if (i < period) {
         counters.success += 1;
+        if (counters.lastSuccess === Number.POSITIVE_INFINITY) {
+          counters.lastSuccess = i + 1;
+        }
       }
       for (let j=0; j<smoothing; j++) {
         const idx = i - j;
@@ -176,7 +180,7 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
     });
   });
 
-  const result = Array.from(values).reduce((acc, [value, {success, trends}]) => {
+  const result = Array.from(values).reduce((acc, [value, {success, trends, lastSuccess}]) => {
     const percentage =  Math.round((success / period  + Number.EPSILON) * 100) / 100;
     acc.push({
       value: value,
@@ -185,7 +189,8 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
       smoothing: smoothing,
       percentageOfSuccesses: percentage,
       trend: trends[0],
-      trends: trends
+      trends: trends,
+      lastSuccess: lastSuccess
     });
     return acc;
   }, []);
@@ -215,6 +220,12 @@ export const sortValuesStats = (valuesStats, sortCriteria, sortAscending, smooth
         return sortAscending?aScore - bScore:bScore - aScore;
       }
       return sortAscending?aTrend - bTrend:bTrend - aTrend;
+    }
+    case "lastSuccess": {
+      if (a.lastSuccess === b.lastSuccess) {
+        return sortAscending?a.value - b.value:b.value - a.value;
+      }
+      return sortAscending?a[sortCriteria] - b[sortCriteria]:b[sortCriteria] - a[sortCriteria];
     }
     default: // "value"
       return sortAscending?a[sortCriteria] - b[sortCriteria]:b[sortCriteria] - a[sortCriteria];

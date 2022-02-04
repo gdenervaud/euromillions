@@ -24,9 +24,10 @@ const SerieComponent =  ({ rows, onFavoriteToggle, sortAscending, sortCriteria, 
     <table className={classes.container}>
       <thead>
         <tr>
-          <th><SortButton value="value"   selected={sortCriteria === "value"}   isAscending={sortAscending} onClick={onSort} >Numéros</SortButton></th>
-          <th><SortButton value="success" selected={sortCriteria === "success"} isAscending={sortAscending} onClick={onSort} >Tirages</SortButton></th>
-          <th><SortButton value="trend"   selected={sortCriteria === "trend"}   isAscending={sortAscending} onClick={onSort} >Tendance</SortButton></th>
+          <th><SortButton value="value"         selected={sortCriteria === "value"}         isAscending={sortAscending} onClick={onSort} >Numéros</SortButton></th>
+          <th><SortButton value="lastSuccess"   selected={sortCriteria === "lastSuccess"}   isAscending={sortAscending} onClick={onSort} >Pas vu depuis</SortButton></th>
+          <th><SortButton value="success"       selected={sortCriteria === "success"}       isAscending={sortAscending} onClick={onSort} >Succès</SortButton></th>
+          <th><SortButton value="trend"         selected={sortCriteria === "trend"}         isAscending={sortAscending} onClick={onSort} >Tendance</SortButton></th>
         </tr>
       </thead>
       <tbody>
