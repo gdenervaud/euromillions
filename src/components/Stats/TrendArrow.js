@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
       transform: "rotate(90deg)",
       color: "red"
     }
-  },
+  }
 });
 
 export const TrendArrow = ({ trend }) => {

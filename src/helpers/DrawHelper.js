@@ -91,7 +91,7 @@ export const getSmoothings = (draws, whiteList, includeAll) => {
   return dates;
 };
 
-const getStats = values => {
+const getDrawStats = values => {
   const average = StatsHelpers.average(values);
   const standardDeviation = StatsHelpers.standardDeviation(values);
   return {
@@ -121,7 +121,7 @@ const getTrend = (stats, value) => {
 };
 
 
-export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing) => {
+export const getDrawsStats = (maxValue, drawSize, draws, getDrawValues, period, smoothing) => {
 
   const drawsByDate = draws.sort((a, b) => a.date - b.date);
 
@@ -171,8 +171,8 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
   Array.from(Array(period)).forEach((_, index) => {
     const smaScores = Array.from(values).map(([_, v]) => v.trends[index].sma.score);
     const emaScores = Array.from(values).map(([_, v]) => v.trends[index].ema.score);
-    const smaStats = getStats(smaScores);
-    const emaStats = getStats(emaScores);
+    const smaStats = getDrawStats(smaScores);
+    const emaStats = getDrawStats(emaScores);
     values.forEach(v => {
       const trend = v.trends[index];
       trend.sma.trend = getTrend(smaStats, trend.sma.score);
@@ -190,7 +190,9 @@ export const getValuesStats = (maxValue, draws, getDrawValues, period, smoothing
       percentageOfSuccesses: percentage,
       trend: trends[0],
       trends: trends,
-      lastSuccess: lastSuccess
+      lastSuccess: lastSuccess,
+      drawSize: drawSize,
+      maxValue: maxValue
     });
     return acc;
   }, []);

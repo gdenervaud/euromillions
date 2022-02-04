@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
 import { Value } from "../Value";
+import { LastSuccess } from "./LastSuccess";
 import { Bar } from "./Bar";
 import { TrendBar } from "./TrendBar";
 import { TrendArrow } from "./TrendArrow";
@@ -12,9 +13,6 @@ const useStyles = createUseStyles({
     "& > td": {
       textAlign: "center"
     }
-  },
-  lastSuccess: {
-    lineHeight: "1.2rem"
   },
   barPnl: {
     background: "rgba(0,0,0,0.1)",
@@ -48,7 +46,7 @@ const useStyles = createUseStyles({
   }
 });
 
-export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, trends, trend, lastSuccess, smoothingMethod, isFavorite, Component}, onFavoriteToggle}) => {
+export const Row = ({ row: {value, success, period, smoothing, percentageOfSuccesses, trends, trend, lastSuccess, drawSize, maxValue, smoothingMethod, isFavorite, Component}, onFavoriteToggle}) => {
 
   const classes = useStyles();
 
@@ -83,8 +81,8 @@ export const Row = ({ row: {value, success, period, smoothing, percentageOfSucce
       <td>
         <Value Component={Component} value={value} checked={true} isFavorite={isFavorite} readOnly={true} onFavorite={onFavoriteToggle} />
       </td>
-      <td className={classes.lastSuccess}>
-        {lastSuccess === Number.POSITIVE_INFINITY?"jamais tiré":(lastSuccess > 1)?`${lastSuccess} tirages`:"le dernier tirage"}
+      <td>
+        <LastSuccess lastSuccess={lastSuccess} drawSize={drawSize} maxValue={maxValue} />
       </td>
       <td style={{width: "100%"}}>
         <div className={`${classes.barPnl} ${showTrends?"show-trend":""}`} >

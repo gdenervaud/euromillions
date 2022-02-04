@@ -3,7 +3,7 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 
-import { getValuesStats, sortValuesStats } from "../../helpers/DrawHelper";
+import { getDrawsStats, sortValuesStats } from "../../helpers/DrawHelper";
 
 import { SortButton } from "./SortButton";
 import { Row } from "./Row";
@@ -40,9 +40,9 @@ const SerieComponent =  ({ rows, onFavoriteToggle, sortAscending, sortCriteria, 
 };
 
 
-export const Serie =  ({ draws, maxValue, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, smoothingMethod, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
+export const Serie =  ({ draws, maxValue, drawSize, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, smoothingMethod, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
 
-  const values = getValuesStats(maxValue, draws, getValue, period, smoothing);
+  const values = getDrawsStats(maxValue, drawSize, draws, getValue, period, smoothing);
   const rows = sortValuesStats(values, sortCriteria, sortAscending, smoothingMethod)
     .map(row => (
       {

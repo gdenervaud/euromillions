@@ -10,6 +10,7 @@ export const Stats = ({ draws, favorites, onFavoritesChange }) => {
   const series = [
     {
       maxValue: 50,
+      drawSize: 5,
       itemComponent: Number,
       getValue: draw => [...draw.numbers],
       favorites: favorites[0].list,
@@ -17,6 +18,7 @@ export const Stats = ({ draws, favorites, onFavoritesChange }) => {
     },
     {
       maxValue: 12,
+      drawSize: 2,
       itemComponent: Star,
       getValue: draw => [...draw.stars],
       favorites: favorites[1].list,
@@ -24,6 +26,7 @@ export const Stats = ({ draws, favorites, onFavoritesChange }) => {
     },
     {
       maxValue: 50,
+      drawSize: 5,
       itemComponent: SwissWin,
       getValue: draw => [...draw.swissWin],
       favorites: favorites[2].list,

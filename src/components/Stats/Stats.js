@@ -203,12 +203,12 @@ export const Stats = ({ draws, series}) => {
       <div>
         <Scrollbars autoHide>
           <div className={classes.stats} >
-            {series.map(({maxValue, itemComponent, getValue, favorites, onFavoriteToggle}, index) => (
+            {series.map(({maxValue, drawSize, itemComponent, getValue, favorites, onFavoriteToggle}, index) => (
               <div  key={index} className={classes.serie} >
                 {!showOnlyFavorites && (
                   <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
                 )}
-                <Serie draws={draws} maxValue={maxValue} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod="sma" sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
+                <Serie draws={draws} maxValue={maxValue} drawSize={drawSize} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod="sma" sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
               </div>
             ))}
           </div>
