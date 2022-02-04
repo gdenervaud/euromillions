@@ -223,7 +223,7 @@ export const sortValuesStats = (valuesStats, sortCriteria, sortAscending, smooth
     }
     case "lastSuccess": {
       if (a.lastSuccess === b.lastSuccess) {
-        return sortAscending?a.value - b.value:b.value - a.value;
+        return a.value - b.value;
       }
       return sortAscending?a[sortCriteria] - b[sortCriteria]:b[sortCriteria] - a[sortCriteria];
     }
