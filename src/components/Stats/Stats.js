@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { getPeriods, getSmoothings } from "../../helpers/DrawHelper";
 import Toggle from "../Toggle";
 import { Favorites } from "./Favorites";
 import { Serie } from "./Serie";
+import { PeriodSelector } from "./PeriodSelector";
+import { SmoothingSelector } from "./SmoothingSelector";
 
 const useStyles = createUseStyles({
   container: {
@@ -38,54 +39,6 @@ const useStyles = createUseStyles({
       padding: "20px"
     }
   },
-  selector: {
-    display: "inline-block"
-  },
-  selectBox: {
-    display: "inline-block",
-    position: "relative",
-    "&:not(.disabled):after": {
-      content: "\"\"",
-      position: "absolute",
-      top: "50%",
-      right: "10px",
-      width: 0,
-      height: 0,
-      marginTop: "-3px",
-      borderTop: "6px solid #4d4d4d",
-      borderRight: "6px solid transparent",
-      borderLeft: "6px solid transparent",
-      pointerEvents: "none"
-    }
-  },
-  select: {
-    marginBottom: 0,
-    display: "inline-block",
-    minWidth: "100px",
-    width: "100%",
-    padding: "0.275rem 20px 0.35rem 6px",
-    color: "#4d4d4d",
-    border:"1px solid #4d4d4d",
-    borderRadius: "2px",
-    backgroundColor: "white",
-    "-webkit-appearance": "none",
-    "&:not(.disabled):not(:disabled):hover": {
-      //backgroundColor: "#5a6268",
-      //borderColor: "#5a6268"
-    },
-    "&:focus": {
-      color: "var(--ft-color-loud)",
-      borderColor: "rgba(64, 169, 243, 0.5)",
-      backgroundColor: "transparent",
-      outline: 0,
-      boxShadow: "0 0 0 0.2rem rgb(0 123 255 / 25%)"
-    },
-    "&.disabled,&:disabled":{
-      backgroundColor: "var(--bg-color-blend-contrast1)",
-      color: "var(--ft-color-normal)",
-      cursor: "text"
-    }
-  },
   favoritesToggle: {
     marginTop: "15px !important",
     whiteSpace: "nowrap",
@@ -110,48 +63,13 @@ const useStyles = createUseStyles({
   }
 });
 
-const Selector = ({title, value, list, onChange}) => {
-
-  const classes = useStyles();
-
-  const handleChange = e => onChange(Number.parseInt(e.target.value));
-
-  return (
-    <div className={classes.selector}>
-      {title}:&nbsp;
-      <div className={classes.selectBox} >
-        <select className={classes.select} value={value} onChange={handleChange} >
-          {list.map(item => <option key={item.value} value={item.value}>{item.name}</option>)}
-        </select>
-      </div>
-    </div>
-  );
-};
-
-const PeriodSelector = ({draws, period, onChange}) => {
-
-  const periods = getPeriods(draws, [1,2,3,4,5,10,15,20,30,50,100], true);
-
-  return (
-    <Selector title="Période" value={period} list={periods} onChange={onChange} />
-  );
-};
-
-const SmoothingSelector = ({draws, smoothing, onChange}) => {
-
-  const smoothings =  getSmoothings(draws, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], false);
-
-  return (
-    <Selector title="Lissage" value={smoothing} list={smoothings} onChange={onChange} />
-  );
-};
-
 export const Stats = ({ draws, series}) => {
 
   const drawsByDate = draws.sort((a, b) => a.date - b.date);
 
   const [period, setPeriod] = useState(drawsByDate.length);
   const [smoothing, setSmoothing] = useState(drawsByDate.length >= 10?10:drawsByDate.length);
+  const [smoothingMethod, setSmoothingMethod] = useState("sma");
 
   const [sortAscending, setSortAscending] = useState(true);
   const [sortCriteria, setSortCriteria] = useState("value");
@@ -175,7 +93,7 @@ export const Stats = ({ draws, series}) => {
     <div className={classes.container}>
       <div className={classes.header} >
         <PeriodSelector draws={draws} period={period} onChange={setPeriod} />
-        <SmoothingSelector draws={draws} smoothing={smoothing} onChange={setSmoothing} />
+        <SmoothingSelector draws={draws} smoothing={smoothing} method={smoothingMethod} onSmoothingChange={setSmoothing} onMethodChange={setSmoothingMethod} />
         {hasFavorites && (
           <Toggle
             className={classes.favoritesToggle}
@@ -192,7 +110,7 @@ export const Stats = ({ draws, series}) => {
                 value: false,
                 label: "Tous les numéros",
                 icon: "times",
-                activeColor: "red",
+                activeColor: "#40a9f3",
                 inactiveColor: "rgb(224, 224, 224)"
               }
             ]}
@@ -208,7 +126,7 @@ export const Stats = ({ draws, series}) => {
                 {!showOnlyFavorites && (
                   <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
                 )}
-                <Serie draws={draws} maxValue={maxValue} drawSize={drawSize} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod="sma" sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
+                <Serie draws={draws} maxValue={maxValue} drawSize={drawSize} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod={smoothingMethod} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
               </div>
             ))}
           </div>

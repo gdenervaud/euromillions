@@ -17,6 +17,8 @@ import {faArrowRight} from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import {faDotCircle} from "@fortawesome/free-solid-svg-icons/faDotCircle";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import {faWeightHanging} from "@fortawesome/free-solid-svg-icons/faWeightHanging";
+import {faBalanceScale} from "@fortawesome/free-solid-svg-icons/faBalanceScale";
 
 library.add(
   faHome,
@@ -35,5 +37,7 @@ library.add(
   faArrowRight,
   faDotCircle,
   faExclamationTriangle,
-  faCircleNotch
+  faCircleNotch,
+  faWeightHanging,
+  faBalanceScale
 );
