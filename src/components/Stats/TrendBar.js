@@ -101,7 +101,6 @@ export const TrendBar = ({ className, trends }) => {
     return null;
   }
 
-
   const values = trends.map((v, index) => ({
     from: index === trends.length-1?v.trend:trends[index+1].trend,
     to: v.trend,

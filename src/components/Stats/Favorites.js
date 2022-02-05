@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Value } from "../Value";
 import { FavoriteIcon } from "../FavoriteIcon";
 
-
 const useStyles = createUseStyles({
   container: {
     position: "relative",

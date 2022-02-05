@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -100,13 +100,13 @@ const Users = ({ db }) => {
     setUsers(list);
   };
 
-  const onSaveUser = user => {
+  const onSaveUser = useCallback(user => {
 
-  };
+  }, []);
 
-  const onDeleteUser = user => {
+  const onDeleteUser = useCallback(user => {
 
-  };
+  }, []);
 
   return (
     <div className={classes.container}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { createUseStyles } from "react-jss";
 
 import { FavoriteIcon } from "./FavoriteIcon";
@@ -40,6 +40,14 @@ export const Value = ({ value, checked, isFavorite, readOnly, Component, onClick
 
   const classes = useStyles();
 
+  const handleFavorite = useCallback(() => {
+    onFavorite(value, !isFavorite);
+  }, [value, isFavorite, onFavorite]);
+
+  const handleCLick = useCallback(() => {
+    onClick(value, !checked);
+  }, [value, checked, onClick]);
+
   if (readOnly) {
     if (typeof onFavorite !== "function") {
       return (
@@ -50,21 +58,13 @@ export const Value = ({ value, checked, isFavorite, readOnly, Component, onClick
       );
     }
 
-    const handleCLick = () => {
-      onFavorite(value, !isFavorite);
-    };
-
     return (
-      <button type="button" className={`${classes.valueBtn} ${classes.value}`} onClick={handleCLick} >
+      <button type="button" className={`${classes.valueBtn} ${classes.value}`} onClick={handleFavorite} >
         <Component value={value} checked={checked} />
         <FavoriteIcon className={classes.favorite} show={isFavorite} />
       </button>
     );
   }
-
-  const handleCLick = () => {
-    onClick(value, !checked);
-  };
 
   return (
     <button type="button" className={`${classes.valueBtn} ${classes.value}`} onClick={handleCLick} >

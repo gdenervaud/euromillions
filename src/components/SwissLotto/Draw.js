@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import { getUpdatedList } from "../../helpers/DrawHelper";
 import { isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
@@ -15,32 +15,28 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [chance, setChance] = useState(draw.chance);
 
-  if (readOnly && !isDrawMatching(draw, favoritesFilter, favorites)) {
-    return null;
-  }
-
-  const handleDateChange = date => {
+  const handleDateChange = useCallback(date => {
     setDate(date);
-  };
+  }, []);
 
-  const handleNumberClick = (number, add) => {
+  const handleNumberClick = useCallback((number, add) => {
     const list = getUpdatedList(numbers, number, add);
     setNumbers(list);
-  };
+  }, [numbers]);
 
-  const handleChanceClick = (chance, add) => {
+  const handleChanceClick = useCallback((chance, add) => {
     if (add) {
       setChance(chance);
     } else {
       setChance(null);
     }
-  };
+  }, []);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     setReadOnly(false);
-  };
+  }, []);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     draw.date = date;
     draw.numbers = numbers;
     draw.chance = chance;
@@ -48,9 +44,9 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
     setIsSaving(true);
     await onSave(draw);
     setIsSaving(false);
-  };
+  }, [draw, date, numbers, chance, onSave]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setChance(draw.chance);
@@ -58,9 +54,9 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
     setIsDeleting(true);
     await onDelete(draw);
     setIsDeleting(false);
-  };
+  }, [draw, onDelete]);
 
-  const handleCancelEdit = async () => {
+  const handleCancelEdit = useCallback(async () => {
     setDate(draw.date);
     setNumbers([...draw.numbers]);
     setChance(draw.chance);
@@ -70,7 +66,11 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       await onDelete(draw);
       setIsDeleting(false);
     }
-  };
+  }, [draw, onDelete]);
+
+  if (readOnly && !isDrawMatching(draw, favoritesFilter, favorites)) {
+    return null;
+  }
 
   const listOfNumbers = Array.from(Array(42)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
     value: index,

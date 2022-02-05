@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Nav from "react-bootstrap/Nav";
@@ -152,7 +152,7 @@ const App = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setUserProfile = async user => {
+  const setUserProfile = useCallback(async user => {
     setCanEdit(false);
     setIsAdmin(false);
     if (user) {
@@ -178,15 +178,15 @@ const App = () => {
       }
     }
     setIsSigningIn(false);
-  };
+  }, [view]);
 
-  const handleSignIn = () => {
+  const handleSignIn = useCallback(() => {
     if (!isSigningIn) {
       setIsSigningIn(true);
     }
-  };
+  }, [isSigningIn]);
 
-  const handleSignOut = () => {
+  const handleSignOut = useCallback(() => {
     auth.signOut()
       // .then(() => { // handled by onAuthStateChanged
       //   setUserProfile(null);
@@ -195,9 +195,9 @@ const App = () => {
         console.log(err);
         setUserProfile(null);
       });
-  };
+  }, [setUserProfile]);
 
-  const handleMenuSelect = eventKey => {
+  const handleMenuSelect = useCallback(eventKey => {
     switch (eventKey) {
     case "euromillions":
       setView("euromillions");
@@ -217,7 +217,7 @@ const App = () => {
     default: // home
       setView();
     }
-  };
+  }, [handleSignIn, handleSignOut]);
 
   const menuTitle = (<FontAwesomeIcon icon="bars" title="menu" />);
 

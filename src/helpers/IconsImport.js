@@ -19,6 +19,7 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {faWeightHanging} from "@fortawesome/free-solid-svg-icons/faWeightHanging";
 import {faBalanceScale} from "@fortawesome/free-solid-svg-icons/faBalanceScale";
+import {faCircle} from "@fortawesome/free-solid-svg-icons/faCircle";
 
 library.add(
   faHome,
@@ -39,5 +40,6 @@ library.add(
   faExclamationTriangle,
   faCircleNotch,
   faWeightHanging,
-  faBalanceScale
+  faBalanceScale,
+  faCircle
 );

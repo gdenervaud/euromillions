@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import _  from "lodash-uuid";
 
 import { Tabs } from "../Tabs";
@@ -69,29 +69,29 @@ const SwissLotto = ({ db, dbCollection, canEdit }) => {
     });
   }, [db, dbCollection]);
 
-  const onAddDraw = () => {
+  const onAddDraw = useCallback(() => {
     const draw = new SwissLottoDraw(_.uuid(), toDateString(new Date()), [], null, null);
     setDraws(draws => [draw, ...draws]);
-  };
-  const onSaveDraw = async draw => {
+  }, []);
+  const onSaveDraw = useCallback(async draw => {
     await saveDbItem(db, dbCollection, draw, swissLottoDrawConverter);
     setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
-  };
-  const onDeleteDraw = draw => {
+  }, [db, dbCollection]);
+  const onDeleteDraw = useCallback(draw => {
     if (draw.lastUpdated) {
       deleteDbItem(db, dbCollection, draw.id);
     }
     setDraws(draws => draws.filter(d => d.id !== draw.id));
-  };
+  }, [db, dbCollection]);
 
-  const updateFavorites = fav => {
+  const updateFavorites = useCallback(fav => {
     setFavorites(fav);
     typeof Storage !== "undefined" && localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
-  };
+  }, []);
 
-  const handleResetFavorites = () => {
+  const handleResetFavorites = useCallback(() => {
     updateFavorites([[], []]);
-  };
+  }, [updateFavorites]);
 
   const components = [Number, Chance];
   const fav = favorites.map((list, index) => ({

@@ -98,8 +98,8 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
                 {
                   value: null,
                   label: "Tous les tirages",
-                  icon: "times",
-                  activeColor: "red",
+                  icon: "circle",
+                  activeColor: "#40a9f3",
                   inactiveColor: "rgb(224, 224, 224)"
                 }
               ]}

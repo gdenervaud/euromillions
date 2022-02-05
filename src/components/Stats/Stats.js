@@ -1,6 +1,6 @@
 
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -76,14 +76,14 @@ export const Stats = ({ draws, series}) => {
 
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
-  const handleOnSort = criteria => {
+  const handleOnSort = useCallback(criteria => {
     if (criteria === sortCriteria) {
       setSortAscending(!sortAscending);
     } else {
       setSortAscending(criteria === "value"?true:false);
       setSortCriteria(criteria);
     }
-  };
+  }, [sortAscending, sortCriteria]);
 
   const hasFavorites = series.some(serie => !!serie.favorites.length);
 
@@ -109,7 +109,7 @@ export const Stats = ({ draws, series}) => {
               {
                 value: false,
                 label: "Tous les numéros",
-                icon: "times",
+                icon: "circle",
                 activeColor: "#40a9f3",
                 inactiveColor: "rgb(224, 224, 224)"
               }
