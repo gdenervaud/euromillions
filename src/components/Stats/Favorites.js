@@ -10,7 +10,7 @@ const useStyles = createUseStyles({
   container: {
     position: "relative",
     border: "1px solid lightgrey",
-    margin: "15px 0",
+    margin: "15px 10px 15px 0",
     padding: "15px 10px 10px 10px",
     borderRadius: "15px",
     "& ul": {
@@ -21,6 +21,9 @@ const useStyles = createUseStyles({
         display: "inline-block"
       }
     },
+    "@media screen and (min-width:1024px)": {
+      margin: "15px 0",
+    }
   },
   title: {
     position: "absolute",

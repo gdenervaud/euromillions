@@ -11,24 +11,50 @@ const useStyles = createUseStyles({
     display: "grid",
     gridTemplateRows: "min-content 1fr",
     gridTemplateColumns: "1fr",
-    "& > ul > li > button" : {
-      borderTopWidth: 0,
-      padding: "0.75rem"
-    },
-    "& > ul > li:first-child" : {
-      marginLeft: "100px"
+    "& > ul.nav.nav-tabs": {
+      border: 0,
+      "@media screen and (min-width:1024px)": {
+        borderBottom: "1px solid #dee2e6 !important"
+      },
+      "& > li.nav-item > button.nav-link" : {
+        margin: "10px 0.75rem 4px 0.75rem",
+        border: "0 !important",
+        borderBottom: "2px solid transparent",
+        padding: "4px 0",
+        paddingBottom: "6px",
+        backgroundColor: "#fff",
+        "@media screen and (min-width:1024px)": {
+          padding: "0.5rem !important",
+          margin: "0 !important",
+          marginBottom: "-1px !important",
+          border: "1px solid transparent !important",
+          backgroundColor: "revert !important"
+        },
+        "&.active" : {
+          color: "#333 !important",
+          borderBottom: "2px solid #111 !important",
+          "@media screen and (min-width:1024px)": {
+            color: "#4d4d4d !important",
+            backgroundColor: "#fff !important",
+            border: "1px solid transparent !important",
+            borderColor: "#dee2e6 #dee2e6 #fff !important",
+            borderBottom: "1px solid white !important"
+          }
+        }
+      },
+      "& > li.nav-item:first-child" : {
+        marginLeft: "100px"
+      },
+      "& > li.nav-item:first-child > button.nav-link" : {
+        "@media screen and (min-width:1024px)": {
+          borderLeftWidth: "1px"
+        }
+      }
     },
     "@media screen and (min-width:1024px)": {
       width: "calc(100% - 40px)",
       height: "calc(100% - 40px)",
-      margin: "20px",
-      "& > ul > li > button" : {
-        borderTopWidth: "1px",
-        padding: "0.5rem"
-      },
-      "& > ul > li:first-child > button" : {
-        borderLeftWidth: "1px"
-      }
+      margin: "20px"
     }
   },
   content: {

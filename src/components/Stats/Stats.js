@@ -151,7 +151,7 @@ export const Stats = ({ draws, series}) => {
   const drawsByDate = draws.sort((a, b) => a.date - b.date);
 
   const [period, setPeriod] = useState(drawsByDate.length);
-  const [smoothing, setSmoothing] = useState(drawsByDate.length > 5?6:drawsByDate.length);
+  const [smoothing, setSmoothing] = useState(drawsByDate.length >= 10?10:drawsByDate.length);
 
   const [sortAscending, setSortAscending] = useState(true);
   const [sortCriteria, setSortCriteria] = useState("value");

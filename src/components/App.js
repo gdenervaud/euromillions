@@ -77,16 +77,16 @@ const useStyles = createUseStyles({
     border: 0,
     background: "transparent",
     fontSize: "x-large",
-    padding: "0.75rem",
+    padding: "6px 0",
     color: "#454545",
     "&:hover": {
       boxShadow: "1px 1px 2px #8f8a8a",
       background: "white"
     },
     "@media screen and (min-width:1024px)": {
-      top: "10px",
+      top: "5px",
       right: "10px",
-      padding: "0.375rem 0.75rem"
+      padding: 0
     },
     "& > .nav-item.dropdown": {
       "& > a.dropdown-toggle.nav-link": {

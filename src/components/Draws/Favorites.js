@@ -10,7 +10,7 @@ const useStyles = createUseStyles({
   container: {
     position: "relative",
     border: "1px solid lightgrey",
-    margin: "25px 10px 0 10px",
+    margin: "15px 10px 0 10px",
     padding: "15px 10px 10px 10px",
     borderRadius: "15px",
     "& ul": {
