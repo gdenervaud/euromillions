@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -97,15 +97,17 @@ export const TrendBar = ({ className, trends }) => {
 
   const classes = useStyles();
 
-  if (!Array.isArray(trends) || !trends.length) {
-    return null;
-  }
+  const hasTrends = useMemo(() => Array.isArray(trends) && !!trends.length, [trends]);
 
-  const values = trends.map((v, index) => ({
+  const values = useMemo(() => hasTrends?trends.map((v, index) => ({
     from: index === trends.length-1?v.trend:trends[index+1].trend,
     to: v.trend,
     title: `Tirage du ${new Date(v.date).toLocaleDateString()}`
-  })).reverse();
+  })).reverse():[], [hasTrends, trends]);
+
+  if (!hasTrends) {
+    return null;
+  }
 
   return (
     <div className={`${classes.bar} ${className?className:""}`} >

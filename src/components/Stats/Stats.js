@@ -1,6 +1,6 @@
 
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -85,7 +85,7 @@ export const Stats = ({ draws, series}) => {
     }
   }, [sortAscending, sortCriteria]);
 
-  const hasFavorites = series.some(serie => !!serie.favorites.length);
+  const hasFavorites = useMemo(() => series.some(serie => !!serie.favorites.length), [series]);
 
   const classes = useStyles();
 

@@ -1,6 +1,6 @@
 
 
-import React from "react";
+import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 
 import Toggle from "../Toggle";
@@ -23,7 +23,7 @@ export const SmoothingSelector = ({draws, smoothing, method, onSmoothingChange, 
 
   const classes = useStyles();
 
-  const smoothings =  getSmoothings(draws, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], false);
+  const smoothings =  useMemo(() => getSmoothings(draws, [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], false), [draws]);
 
   return (
     <div className={classes.container}>

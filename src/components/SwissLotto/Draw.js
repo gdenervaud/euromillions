@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import { getUpdatedList } from "../../helpers/DrawHelper";
 import { isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
@@ -68,25 +68,23 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
     }
   }, [draw, onDelete]);
 
-  if (readOnly && !isDrawMatching(draw, favoritesFilter, favorites)) {
-    return null;
-  }
+  const hide = useMemo(() => readOnly && !isDrawMatching(draw, favoritesFilter, favorites), [readOnly, draw, favorites, favoritesFilter]);
 
-  const listOfNumbers = Array.from(Array(42)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
+  const listOfNumbers = useMemo(() => Array.from(Array(42)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
     value: index,
     checked: numbers.includes(index),
     readOnly: readOnly || !(numbers.length < 6 || numbers.includes(index)),
     isFavorite: favorites[0].list.includes(index)
-  }));
+  })), [readOnly, numbers, favorites]);
 
-  const listOfChances = Array.from(Array(6)).map((_, index) => index+1).filter(index => readOnly?index === chance:true).map(index => ({
+  const listOfChances = useMemo(() => Array.from(Array(6)).map((_, index) => index+1).filter(index => readOnly?index === chance:true).map(index => ({
     value: index,
     checked: chance === index,
     readOnly: readOnly,
     isFavorite: favorites[1].list.includes(index)
-  }));
+  })), [readOnly, chance, favorites]);
 
-  const lists = [
+  const lists = useMemo(() => [
     {
       items: listOfNumbers,
       itemComponent: Number,
@@ -101,7 +99,11 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       onItemFavorite: favorites[1].onItemToggle,
       inline: true
     }
-  ];
+  ], [listOfNumbers, listOfChances, favorites, handleNumberClick, handleChanceClick]);
+
+  if (hide) {
+    return null;
+  }
 
   return (
     <DrawComponent

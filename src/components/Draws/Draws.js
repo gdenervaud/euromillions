@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -67,9 +67,9 @@ export const Draws = ({ draws, favorites, DrawComponent, canEdit, onAddDraw, onS
 
   const hasDraws = Array.isArray(draws) && !!draws.length;
 
-  const hasFavorites = Array.isArray(favorites) && favorites.some(f => Array.isArray(f.list) && f.list.length);
+  const hasFavorites = useMemo(() => Array.isArray(favorites) && favorites.some(f => Array.isArray(f.list) && f.list.length), [favorites]);
 
-  const hasFilteredDraws =  !hasDraws || !hasFavorites || draws.some(draw => isDrawMatching(draw, favoritesFilter, favorites));
+  const hasFilteredDraws =  useMemo(() => !hasDraws || !hasFavorites || draws.some(draw => isDrawMatching(draw, favoritesFilter, favorites)), [draws, favorites, hasDraws, hasFavorites, favoritesFilter, isDrawMatching]);
 
   return (
     <div className={classes.container}>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import { getUpdatedList } from "../../helpers/DrawHelper";
 import { isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
@@ -75,32 +75,30 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
     }
   }, [draw, onDelete]);
 
-  if (readOnly && !isDrawMatching(draw, favoritesFilter, favorites)) {
-    return null;
-  }
+  const hide = useMemo(() => readOnly && !isDrawMatching(draw, favoritesFilter, favorites), [readOnly, draw, favorites, favoritesFilter]);
 
-  const listOfNumbers = Array.from(Array(50)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
+  const listOfNumbers = useMemo(() => Array.from(Array(50)).map((_, index) => index+1).filter(index => readOnly?numbers.includes(index):true).map(index => ({
     value: index,
     checked: numbers.includes(index),
     readOnly: readOnly || !(numbers.length < 5 || numbers.includes(index)),
     isFavorite: favorites[0].list.includes(index)
-  }));
+  })), [readOnly, numbers, favorites]);
 
-  const listOfStars = Array.from(Array(12)).map((_, index) => index+1).filter(index => readOnly?stars.includes(index):true).map(index => ({
+  const listOfStars = useMemo(() => Array.from(Array(12)).map((_, index) => index+1).filter(index => readOnly?stars.includes(index):true).map(index => ({
     value: index,
     checked: stars.includes(index),
     readOnly: readOnly || !(stars.length < 2 || stars.includes(index)),
     isFavorite: favorites[1].list.includes(index)
-  }));
+  })), [readOnly, stars, favorites]);
 
-  const listOfSwissWin = Array.from(Array(50)).map((_, index) => index+1).filter(index => readOnly?swissWin.includes(index):true).map(index => ({
+  const listOfSwissWin = useMemo(() => Array.from(Array(50)).map((_, index) => index+1).filter(index => readOnly?swissWin.includes(index):true).map(index => ({
     value: index,
     checked: swissWin.includes(index),
     readOnly: readOnly || !(swissWin.length < 5 || swissWin.includes(index)),
     isFavorite: favorites[2].list.includes(index)
-  }));
+  })), [readOnly, swissWin, favorites]);
 
-  const lists = [
+  const lists = useMemo(() => [
     {
       items: listOfNumbers,
       itemComponent: Number,
@@ -119,7 +117,11 @@ export const Draw = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilt
       onItemClick: handleSwissWinClick,
       onItemFavorite: favorites[2].onItemToggle
     }
-  ];
+  ], [listOfNumbers, listOfStars, listOfSwissWin, favorites, handleNumberClick, handleStarClick, handleSwissWinClick]);
+
+  if (hide) {
+    return null;
+  }
 
   return (
     <DrawComponent

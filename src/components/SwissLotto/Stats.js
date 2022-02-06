@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Stats as StatsComponent } from "../Stats/Stats";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
 
-export const Stats = ({ draws, favorites, onFavoritesChange }) => {
+export const Stats = ({ draws, favorites }) => {
 
-  const series = [
+  const series = useMemo(() => [
     {
       maxValue: 42,
       drawSize: 6,
@@ -23,7 +23,7 @@ export const Stats = ({ draws, favorites, onFavoritesChange }) => {
       favorites: favorites[1].list,
       onFavoriteToggle: favorites[1].onItemToggle
     }
-  ];
+  ], [favorites]);
 
   return (
     <StatsComponent draws={draws} series={series} />

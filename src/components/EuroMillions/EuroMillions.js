@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import _  from "lodash-uuid";
 
 import { Tabs } from "../Tabs";
@@ -95,17 +95,19 @@ const EuroMillions = ({ db, dbCollection, canEdit }) => {
     updateFavorites([[], [], []]);
   }, [updateFavorites]);
 
-  const components = [Number, Star, SwissWin];
-  const fav = favorites.map((list, index) => ({
-    list: list,
-    itemComponent: components[index],
-    onItemToggle: (value, add) => {
-      const updatedList = value?getUpdatedList(favorites[index], value, add):[];
-      const updatedFav = [...favorites];
-      updatedFav[index] = updatedList;
-      updateFavorites(updatedFav);
-    }
-  }));
+  const fav = useMemo(() => {
+    const components = [Number, Star, SwissWin];
+    return favorites.map((list, index) => ({
+      list: list,
+      itemComponent: components[index],
+      onItemToggle: (value, add) => {
+        const updatedList = value?getUpdatedList(favorites[index], value, add):[];
+        const updatedFav = [...favorites];
+        updatedFav[index] = updatedList;
+        updateFavorites(updatedFav);
+      }
+    }));
+  }, [favorites, updateFavorites]);
 
   return (
     <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >

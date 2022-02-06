@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -65,7 +65,9 @@ export const Favorites = ({ favorites, onReset }) => {
 
   const classes = useStyles();
 
-  if (!Array.isArray(favorites) || !favorites.length || !favorites.some(f => Array.isArray(f.list) && f.list.length)) {
+  const hasFavorites = useMemo(() => Array.isArray(favorites) && favorites.length && favorites.some(f => Array.isArray(f.list) && f.list.length), [favorites]);
+
+  if (!hasFavorites) {
     return null;
   }
 

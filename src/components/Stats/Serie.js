@@ -1,6 +1,6 @@
 
 
-import React from "react";
+import React, { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 
 import { getDrawsStats, sortValuesStats } from "../../helpers/DrawHelper";
@@ -42,8 +42,8 @@ const SerieComponent =  ({ rows, onFavoriteToggle, sortAscending, sortCriteria, 
 
 export const Serie =  ({ draws, maxValue, drawSize, favorites, itemComponent, getValue, onFavoriteToggle, period, smoothing, smoothingMethod, sortAscending, sortCriteria, onSort, showOnlyFavorites}) => {
 
-  const values = getDrawsStats(maxValue, drawSize, draws, getValue, period, smoothing);
-  const rows = sortValuesStats(values, sortCriteria, sortAscending, smoothingMethod)
+  const values = useMemo(() => getDrawsStats(maxValue, drawSize, draws, getValue, period, smoothing), [maxValue, drawSize, draws, getValue, period, smoothing]);
+  const rows = useMemo(() => sortValuesStats(values, sortCriteria, sortAscending, smoothingMethod)
     .map(row => (
       {
         ...row,
@@ -51,18 +51,10 @@ export const Serie =  ({ draws, maxValue, drawSize, favorites, itemComponent, ge
         Component: itemComponent,
         smoothingMethod: smoothingMethod
       }
-    ))
-    .filter(row => (showOnlyFavorites && favorites.length)?row.isFavorite:true);
-
-  const props = {
-    rows: rows,
-    onFavoriteToggle: onFavoriteToggle,
-    sortAscending: sortAscending,
-    sortCriteria: sortCriteria,
-    onSort: onSort,
-  };
+    )), [values, sortCriteria, sortAscending, smoothingMethod, favorites, itemComponent]);
+  const filteredRows = useMemo(() => rows.filter(row => (showOnlyFavorites && favorites.length)?row.isFavorite:true), [rows, favorites, showOnlyFavorites]);
 
   return (
-    <SerieComponent {...props} />
+    <SerieComponent rows={filteredRows} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={onSort} onFavoriteToggle={onFavoriteToggle} />
   );
 };
