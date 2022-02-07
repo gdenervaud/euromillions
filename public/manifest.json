@@ -1,6 +1,7 @@
 {
   "short_name": "EuroMillions",
-  "name": "EuroMillions",
+  "name": "EuroMillions & Swiss Lotto Tirages & Statistiques",
+  "description": "EuroMillions & Swiss Lotto Tirages & Statistiques",
   "icons": [
     {
       "src": "favicon.ico",

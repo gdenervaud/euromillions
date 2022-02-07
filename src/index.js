@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {JssProvider} from "react-jss";
 import "bootstrap/dist/css/bootstrap.min.css";
 // import reportWebVitals from "./reportWebVitals";
 
@@ -10,7 +11,9 @@ import "./helpers/IconsImport";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <JssProvider id={{minify: true}}>
+      <App />
+    </JssProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
