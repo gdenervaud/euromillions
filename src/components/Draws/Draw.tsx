@@ -122,7 +122,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
     position: "absolute",
     top: "4px",
     right: "6px",
-    margin: 0,
+    margin: "0",
     padding: "8px",
     border: 0,
     background: "transparent",

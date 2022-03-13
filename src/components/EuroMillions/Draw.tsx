@@ -103,13 +103,15 @@ export const Draw: FC<DrawProps<EuroMillionsDraw>> = ({ draw, favorites, canEdit
       items: listOfNumbers,
       itemComponent: Number,
       onItemClick: handleNumberClick,
-      onItemFavorite: favorites[0].onItemToggle
+      onItemFavorite: favorites[0].onItemToggle,
+      inline: true
     },
     {
       items: listOfStars,
       itemComponent: Star,
       onItemClick: handleStarClick,
-      onItemFavorite: favorites[1].onItemToggle
+      onItemFavorite: favorites[1].onItemToggle,
+      inline: true
     },
     {
       items: listOfSwissWin,
