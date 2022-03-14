@@ -99,7 +99,7 @@ export interface StatsProps<DrawType extends Draw> {
 
 export const Stats = <DrawType extends Draw, >({ draws, series, columns}: StatsProps<DrawType>) => {
 
-  const drawsByDate = draws.sort((a, b) => a.date.localeCompare(b.date));
+  const drawsByDate = [...draws].sort((a, b) => b.date.localeCompare(a.date));
 
   const [showSettings, setShowSettings] = useState(false);
   const [period, setPeriod] = useState(drawsByDate.length);

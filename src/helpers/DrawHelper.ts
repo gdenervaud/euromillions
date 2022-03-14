@@ -225,7 +225,7 @@ export const compareDates = (a: Date, b: Date) => {
 
 export const getDrawsStats = <DrawType extends Draw, >(maxValue: number, drawSize: number, draws: DrawType[], getDrawValues: (draw: DrawType) => number[], period: number, smoothing: number): ValueStats[] => {
 
-  const drawsByDate = draws.sort((a: Draw, b: Draw) => a.date.localeCompare(b.date));
+  const drawsByDate = [...draws].sort((a: Draw, b: Draw) => b.date.localeCompare(a.date));
 
   const values = Array.from(Array(maxValue)).map((_, index) => index+1).reduce((acc,index) => {
     acc.set(index, {
