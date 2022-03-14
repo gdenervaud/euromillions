@@ -6,6 +6,9 @@ import { Number as Component } from "../Number";
 
 const useStyles = createUseStyles({
   chance: {
+    height: "45px",
+    width: "45px",
+    lineHeight: "45px",
     borderRadius: "50% !important",
     backgroundColor: "white !important",
     color: "red !important",
@@ -14,6 +17,16 @@ const useStyles = createUseStyles({
     "&.checked": {
       backgroundColor: "#eebb05 !important",
       color: "red !important"
+    },
+    "@media screen and (min-width:380px)": {
+      height: "48px",
+      width: "48px",
+      lineHeight: "48px"
+    },
+    "@media screen and (min-width:410px)": {
+      height: "50px",
+      width: "50px",
+      lineHeight: "50px"
     }
   }
 });

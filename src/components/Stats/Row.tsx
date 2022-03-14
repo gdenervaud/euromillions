@@ -1,8 +1,8 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
-import { ValueStats, SmoothingMethod, Trend }from "../../helpers/DrawHelper";
-import { Value, ValueComponentProps } from "../Value";
+import { ItemStats, SmoothingMethod, Trend }from "../../helpers/DrawHelper";
+import { Value } from "../Value";
 import { LastSuccess } from "./LastSuccess";
 import { Bar } from "./Bar";
 import { TrendBar } from "./TrendBar";
@@ -50,14 +50,8 @@ const useStyles = createUseStyles({
   }
 });
 
-export interface RowProp extends ValueStats {
-  isFavorite: boolean;
-  Component: FC<ValueComponentProps>;
-  smoothingMethod: SmoothingMethod;
-}
-
 interface RowProps {
-  row: RowProp;
+  row: ItemStats;
   onFavoriteToggle: (value?: number, add?: boolean) => void;
 }
 

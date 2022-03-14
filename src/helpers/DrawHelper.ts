@@ -207,6 +207,11 @@ export interface ValueStats {
   drawSize: number;
   maxValue: number;
 }
+export interface ItemStats extends ValueStats {
+  isFavorite: boolean;
+  Component: FC<ValueComponentProps>;
+  smoothingMethod: SmoothingMethod;
+}
 
 export const compareDates = (a: Date, b: Date) => {
   if (a > b) {

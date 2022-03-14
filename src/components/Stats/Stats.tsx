@@ -51,8 +51,6 @@ const useStyles = createUseStyles({
       padding: "0 20px 20px 20px"
     }
   },
-  grid: {},
-  list: {},
   serie: {
     "& + $serie": {
       marginTop: "15px"
@@ -95,10 +93,11 @@ export interface Serie<DrawType extends Draw> {
 export interface StatsProps<DrawType extends Draw> {
   draws: DrawType[];
   series: Serie<DrawType>[];
+  columns: number
 }
 
 
-export const Stats = <DrawType extends Draw, >({ draws, series}: StatsProps<DrawType>) => {
+export const Stats = <DrawType extends Draw, >({ draws, series, columns}: StatsProps<DrawType>) => {
 
   const drawsByDate = draws.sort((a, b) => a.date.localeCompare(b.date));
 
@@ -111,7 +110,7 @@ export const Stats = <DrawType extends Draw, >({ draws, series}: StatsProps<Draw
   const [sortCriteria, setSortCriteria] = useState(SortCriteria.value);
 
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [showAsGrid, setShowAsGrid] = useState(false);
+  const [showAsGrid, setShowAsGrid] = useState(true);
 
   const handleOnSort = useCallback(criteria => {
     if (criteria === sortCriteria) {
@@ -129,7 +128,12 @@ export const Stats = <DrawType extends Draw, >({ draws, series}: StatsProps<Draw
 
   const handleOnShowOnlyFavoritesChange = useCallback((value: unknown): void => setShowOnlyFavorites(value as boolean), [setShowOnlyFavorites]);
 
-  const handleOnShowAsGridChange = useCallback((value: unknown): void => setShowAsGrid(value as boolean), [setShowAsGrid]);
+  const handleOnShowAsGridChange = useCallback((value: unknown): void => {
+    setShowAsGrid(value as boolean);
+    setSortCriteria(SortCriteria.value),
+    setSortAscending(true);
+    setShowOnlyFavorites(false);
+  }, [setShowAsGrid]);
 
   const classes = useStyles();
 
@@ -196,21 +200,14 @@ export const Stats = <DrawType extends Draw, >({ draws, series}: StatsProps<Draw
       <div>
         <Scrollbars autoHide>
           <div className={classes.stats} >
-            {showAsGrid?
-              <div className={classes.grid} >
+            {series.map(({maxValue, drawSize, itemComponent, getValue, favorites, onFavoriteToggle}, index) => (
+              <div  key={index} className={classes.serie} >
+                {!showOnlyFavorites && !showAsGrid && (
+                  <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
+                )}
+                <Serie draws={draws} maxValue={maxValue} drawSize={drawSize} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod={smoothingMethod} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} showAsGrid={showAsGrid} columns={columns}/>
               </div>
-              :
-              <div className={classes.list} >
-                {series.map(({maxValue, drawSize, itemComponent, getValue, favorites, onFavoriteToggle}, index) => (
-                  <div  key={index} className={classes.serie} >
-                    {!showOnlyFavorites && (
-                      <Favorites favorites={favorites} favoriteComponent={itemComponent} onFavoriteClick={onFavoriteToggle} />
-                    )}
-                    <Serie draws={draws} maxValue={maxValue} drawSize={drawSize} favorites={favorites} itemComponent={itemComponent} getValue={getValue} onFavoriteToggle={onFavoriteToggle} period={period} smoothing={smoothing} smoothingMethod={smoothingMethod} sortAscending={sortAscending} sortCriteria={sortCriteria} onSort={handleOnSort} showOnlyFavorites={showOnlyFavorites} />
-                  </div>
-                ))}
-              </div>
-            }
+            ))}
           </div>
         </Scrollbars>
       </div>

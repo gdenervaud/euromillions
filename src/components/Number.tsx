@@ -4,14 +4,6 @@ import { createUseStyles } from "react-jss";
 import { StylableValueComponentProps } from "./Value";
 
 const useStyles = createUseStyles({
-  value: {
-    display: "inline-block",
-    position: "relative",
-    margin: "6px",
-    fontSize: "20px",
-    fontWeight: "bold",
-    verticalAlign: "middle"
-  },
   number: {
     position: "relative",
     height: "50px",

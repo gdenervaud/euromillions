@@ -15,7 +15,11 @@ const useStyles = createUseStyles({
       top: 0,
       left: "50%",
       color: "white",
-      transform: "translate(-50%, 3px) scale(1.2)"
+      filter: "drop-shadow( 3px 3px 2px rgba(0, 0, 0, .3))",
+      transform: "translate(-50%, 3px) scale(1.1)",
+      "@media screen and (min-width:380px)": {
+        transform: "translate(-50%, 3px) scale(1.2)"
+      }
     },
     "& div": {
       position: "absolute",

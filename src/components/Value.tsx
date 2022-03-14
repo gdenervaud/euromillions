@@ -24,10 +24,16 @@ const useStyles = createUseStyles({
   value: {
     display: "inline-block",
     position: "relative",
-    margin: "6px",
+    margin: "2px",
     fontSize: "20px",
     fontWeight: "bold",
-    verticalAlign: "middle"
+    verticalAlign: "middle",
+    "@media screen and (min-width:370px)": {
+      margin: "3px"
+    },
+    "@media screen and (min-width:420px)": {
+      margin: "6px"
+    }
   },
   favorite: {
     position: "absolute",

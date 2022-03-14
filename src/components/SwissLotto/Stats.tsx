@@ -33,7 +33,7 @@ export const Stats = ({ draws, favorites }: StatsProps) => {
   ], [favorites]);
 
   return (
-    <StatsComponent<SwissLottoDraw> draws={draws} series={series} />
+    <StatsComponent<SwissLottoDraw> draws={draws} series={series} columns={7} />
   );
 };
 

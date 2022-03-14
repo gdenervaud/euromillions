@@ -42,7 +42,7 @@ export const Stats = ({ draws, favorites }: StatsProps) => {
   ], [favorites]);
 
   return (
-    <StatsComponent<EuroMillionsDraw> draws={draws} series={series} />
+    <StatsComponent<EuroMillionsDraw> draws={draws} series={series} columns={6} />
   );
 };
 

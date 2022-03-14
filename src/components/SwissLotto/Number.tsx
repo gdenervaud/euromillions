@@ -6,6 +6,9 @@ import { Number as Component } from "../Number";
 
 const useStyles = createUseStyles({
   number: {
+    height: "45px",
+    width: "45px",
+    lineHeight: "45px",
     borderRadius: "0 !important",
     backgroundColor: "white !important",
     color: "red !important",
@@ -16,6 +19,16 @@ const useStyles = createUseStyles({
       backgroundColor: "#c60b12 !important",//"#001367",
       backgroundImage: "linear-gradient(to bottom,#c60b12,#94080d),linear-gradient(#e4c95b,#e4c95b)",
       color: "white !important"
+    },
+    "@media screen and (min-width:380px)": {
+      height: "48px",
+      width: "48px",
+      lineHeight: "48px"
+    },
+    "@media screen and (min-width:410px)": {
+      height: "50px",
+      width: "50px",
+      lineHeight: "50px"
     }
   }
 });
