@@ -9,6 +9,7 @@ module.exports = {
     "google",
   ],
   parser: "babel-eslint",
+  extends: ["standard", "standard-jsx", "standard-react"],
   parserOptions: {
     sourceType: "module",
     allowImportExportEverywhere: true,

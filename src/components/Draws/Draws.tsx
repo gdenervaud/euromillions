@@ -1,7 +1,7 @@
 import React, { FC, useState, useRef, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Scrollbars } from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 import { Draw, DrawProps, Favorite, FavoritesFilter } from "../../helpers/DrawHelper";
 import { Favorites } from "./Favorites";

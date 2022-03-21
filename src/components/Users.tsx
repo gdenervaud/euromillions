@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Scrollbars } from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 // Import the functions you need from the SDKs you need
 //import { initializeApp } from "firebase-admin";

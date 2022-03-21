@@ -2,7 +2,7 @@
 
 import React, { FC, useState, useCallback, useMemo } from "react";
 import { createUseStyles } from "react-jss";
-import { Scrollbars } from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars-2";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -69,7 +69,7 @@ const useStyles = createUseStyles({
     "&:hover": {
       boxShadow: "1px 1px 2px black"
     },
-    "@media screen and (min-width:768px)": {
+    "@media screen and (min-width:1024px)": {
       top: "5px",
       right: "2px"
     }
