@@ -81,18 +81,18 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
     const draw = new EuroMillionsDraw(uuidv4(), toDateString(new Date()), [], [], [], null);
     setDraws(draws => [draw, ...draws]);
   }, []);
-  const onSaveDraw = useCallback(async draw => {
+  const onSaveDraw = useCallback(async (draw: EuroMillionsDraw) => {
     await saveDbItem<EuroMillionsDraw>(db, dbCollection, draw, euroMillionsDrawConverter);
     setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
   }, [db, dbCollection]);
-  const onDeleteDraw = useCallback(draw => {
+  const onDeleteDraw = useCallback((draw: EuroMillionsDraw) => {
     if (draw.lastUpdated) {
       deleteDbItem(db, dbCollection, draw.id);
     }
     setDraws(draws => draws.filter(d => d.id !== draw.id));
   }, [db, dbCollection]);
 
-  const updateFavorites = useCallback(fav => {
+  const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
     typeof Storage !== "undefined" && localStorage.setItem(EuroMillionsLocalStorageKey, JSON.stringify(fav));
   }, []);

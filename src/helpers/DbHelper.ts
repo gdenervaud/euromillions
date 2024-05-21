@@ -3,16 +3,6 @@
 import { collection, doc, getDocs, getDoc, setDoc, deleteDoc, query, orderBy, Firestore, FirestoreDataConverter } from "firebase/firestore"; //updateDoc
 import { Draw } from "./DrawHelper";
 
-export interface User {
-  displayName: string | null | undefined;
-  email: string | null | undefined;
-  emailVerified: boolean;
-  photoURL: string | null | undefined;
-  uid: string;
-  phoneNumber: string | null | undefined;
-  providerData: object | null | undefined;
-}
-
 // Get a list of cities from your database
 export const getDbList = async <DrawType extends Draw, >(db: Firestore, collectionName: string, converter: FirestoreDataConverter<DrawType>, sortByField: string, sortAscending: boolean) => {
   const colRef = collection(db, collectionName).withConverter(converter);

@@ -80,18 +80,18 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
     const draw = new SwissLottoDraw(uuidv4(), toDateString(new Date()), [], null, null);
     setDraws(draws => [draw, ...draws]);
   }, []);
-  const onSaveDraw = useCallback(async draw => {
+  const onSaveDraw = useCallback(async (draw: SwissLottoDraw) => {
     await saveDbItem<SwissLottoDraw>(db, dbCollection, draw, swissLottoDrawConverter);
     setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
   }, [db, dbCollection]);
-  const onDeleteDraw = useCallback(draw => {
+  const onDeleteDraw = useCallback((draw: SwissLottoDraw) => {
     if (draw.lastUpdated) {
       deleteDbItem(db, dbCollection, draw.id);
     }
     setDraws(draws => draws.filter(d => d.id !== draw.id));
   }, [db, dbCollection]);
 
-  const updateFavorites = useCallback(fav => {
+  const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
     typeof Storage !== "undefined" && localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
   }, []);

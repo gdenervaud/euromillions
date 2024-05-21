@@ -7,6 +7,8 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, enableIndexedDbPersistence, terminate } from "firebase/firestore";
+import type { User } from "firebase/auth";
+import { EventKey, SelectCallback } from "@restart/ui/types";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -129,7 +131,7 @@ const App = () => {
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
-    const unregisterAuthObserver = auth.onAuthStateChanged(async user => {
+    const unregisterAuthObserver = auth.onAuthStateChanged(async (user: User|null) => {
       setUserProfile(user);
     });
     enableIndexedDbPersistence(db)
@@ -151,7 +153,7 @@ const App = () => {
     };
   }, []);
 
-  const setUserProfile = useCallback(async user => {
+  const setUserProfile = useCallback(async (user: User|null) => {
     setCanEdit(false);
     setIsAdmin(false);
     if (user) {
@@ -196,7 +198,7 @@ const App = () => {
       });
   }, [setUserProfile]);
 
-  const handleMenuSelect = useCallback(eventKey => {
+  const handleMenuSelect: SelectCallback = useCallback((eventKey: EventKey|null) => {
     switch (eventKey) {
     case "euromillions":
       setView("euromillions");

@@ -15,16 +15,16 @@ export const Draw: FC<DrawProps<SwissLottoDraw>> = ({ draw, favorites, canEdit, 
   const [numbers, setNumbers] = useState([...draw.numbers]);
   const [chance, setChance] = useState<number | null>(draw.chance);
 
-  const handleDateChange = useCallback(date => {
+  const handleDateChange = useCallback((date: string) => {
     setDate(date);
   }, []);
 
-  const handleNumberClick = useCallback((number, add) => {
+  const handleNumberClick = useCallback((number: number, add?: boolean) => {
     const list = getUpdatedList(numbers, number, add);
     setNumbers(list);
   }, [numbers]);
 
-  const handleChanceClick = useCallback((chance, add) => {
+  const handleChanceClick = useCallback((chance: number, add?: boolean) => {
     if (add) {
       setChance(chance);
     } else {

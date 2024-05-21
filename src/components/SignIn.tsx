@@ -4,8 +4,7 @@ import firebase from "firebase/compat/app";
 import { Auth } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
-
-import { User } from "../helpers/DbHelper";
+import type { User } from "firebase/auth";
 
 const useStyles = createUseStyles({
   container: {
@@ -26,7 +25,7 @@ const useStyles = createUseStyles({
 });
 
 
-const SignIn = ({ auth, onSetUserProfile }: {auth: Auth, onSetUserProfile: (user: User | null) => void}) => {
+const SignIn = ({ auth, onSetUserProfile }: {auth: Auth, onSetUserProfile: (user: User | null) => Promise<void>}) => {
 
   const classes = useStyles();
 

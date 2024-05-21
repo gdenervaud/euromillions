@@ -18,21 +18,21 @@ export const Draw: FC<DrawProps<EuroMillionsDraw>> = ({ draw, favorites, canEdit
   const [stars, setStars] = useState([...draw.stars]);
   const [swissWin, setSwissWin] = useState([...draw.swissWin]);
 
-  const handleDateChange = useCallback(date => {
+  const handleDateChange = useCallback((date: string) => {
     setDate(date);
   }, []);
 
-  const handleNumberClick = useCallback((number, add) => {
+  const handleNumberClick = useCallback((number: number, add?: boolean) => {
     const list = getUpdatedList(numbers, number, add);
     setNumbers(list);
   }, [numbers]);
 
-  const handleStarClick = useCallback((star, add) => {
+  const handleStarClick = useCallback((star: number, add?: boolean) => {
     const list = getUpdatedList(stars, star, add);
     setStars(list);
   }, [stars]);
 
-  const handleSwissWinClick = useCallback((number, add) => {
+  const handleSwissWinClick = useCallback((number:number, add?: boolean) => {
     const list = getUpdatedList(swissWin, number, add);
     setSwissWin(list);
   }, [swissWin]);

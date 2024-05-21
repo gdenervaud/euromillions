@@ -112,11 +112,11 @@ export const Stats = <DrawType extends Draw, >({ draws, series, columns}: StatsP
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [showAsGrid, setShowAsGrid] = useState(true);
 
-  const handleOnSort = useCallback(criteria => {
+  const handleOnSort = useCallback((criteria: SortCriteria) => {
     if (criteria === sortCriteria) {
       setSortAscending(!sortAscending);
     } else {
-      setSortAscending(criteria === "value"?true:false);
+      setSortAscending(criteria === SortCriteria.value);
       setSortCriteria(criteria);
     }
   }, [sortAscending, sortCriteria]);
