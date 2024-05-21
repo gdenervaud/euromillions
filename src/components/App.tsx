@@ -6,7 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, enableIndexedDbPersistence, terminate } from "firebase/firestore";
+import { initializeFirestore, FirestoreSettings, persistentLocalCache, terminate } from "firebase/firestore";
 import type { User } from "firebase/auth";
 import { EventKey, SelectCallback } from "@restart/ui/types";
 
@@ -21,9 +21,11 @@ import Users from "./Users";
 import EuroMillions from "./EuroMillions/EuroMillions";
 import SwissLotto from "./SwissLotto/SwissLotto";
 
-// Initialize Firebase
+const firestoreSettings: FirestoreSettings = {
+  localCache: persistentLocalCache()
+};
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = initializeFirestore(app, firestoreSettings);
 const auth = getAuth(app);
 
 const useStyles = createUseStyles({
@@ -134,19 +136,6 @@ const App = () => {
     const unregisterAuthObserver = auth.onAuthStateChanged(async (user: User|null) => {
       setUserProfile(user);
     });
-    enableIndexedDbPersistence(db)
-      .catch(err => {
-        if (err.code === "failed-precondition") {
-          // Multiple tabs open, persistence can only be enabled
-          // in one tab at a a time.
-          // ...
-        } else if (err.code === "unimplemented") {
-          // The current browser does not support all of the
-          // features required to enable persistence
-          // ...
-        }
-      });
-    // Subsequent queries will use persistence, if it was enabled successfully
     return () => {
       unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
       terminate(db);
