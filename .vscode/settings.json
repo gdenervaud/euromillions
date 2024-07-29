@@ -18,5 +18,14 @@
     "titleBar.inactiveBackground": "#42b8ff99",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.color": "#42b8ff"
+  "peacock.color": "#42b8ff",
+  "cSpell.words": [
+    "datepicker",
+    "euromillions",
+    "firebaseui",
+    "firestore",
+    "fontawesome",
+    "fortawesome",
+    "scrollbars"
+  ]
 }

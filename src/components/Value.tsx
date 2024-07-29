@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import { FC, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 
 import { FavoriteIcon } from "./FavoriteIcon";

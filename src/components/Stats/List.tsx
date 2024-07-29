@@ -1,6 +1,6 @@
 
 
-import React from "react";
+
 import { createUseStyles } from "react-jss";
 
 import { SortCriteria, ItemStats } from "../../helpers/DrawHelper";

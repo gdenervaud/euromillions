@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
 import { ItemStats, SmoothingMethod, Trend }from "../../helpers/DrawHelper";

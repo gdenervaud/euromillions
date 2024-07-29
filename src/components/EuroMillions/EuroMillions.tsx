@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Firestore } from "firebase/firestore";
 
@@ -60,21 +60,24 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
   ];
 
   useEffect(() => {
-
+    
     // defaultTirages.forEach(tirage => {
     //   const draw = new EuroMillionsDraw(uuidv4(), tirage.date, tirage.numbers, tirage.stars, null);
     //   saveDbItem(db, dbCollection, draw, euroMillionsDrawConverter);
     // });
 
-    getDbList(db, dbCollection, euroMillionsDrawConverter, "date", false).then(result  => {
-      setDraws(result as EuroMillionsDraw[]);
-      // console.log(JSON.stringify(result.map(d => {
-      //   const c = {...d};
-      //   delete c.lastUpdated;
-      //   return c;
-      // })));
-      setIsLoading(false);
-    });
+    getDbList(db, dbCollection, euroMillionsDrawConverter, "date", false)
+      .then(result  => {
+        setDraws(result as EuroMillionsDraw[]);
+        // console.log(JSON.stringify(result.map(d => {
+        //   const c = {...d};
+        //   delete c.lastUpdated;
+        //   return c;
+        // })));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [db, dbCollection]);
 
   const onAddDraw = useCallback(() => {

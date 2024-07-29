@@ -1,6 +1,6 @@
 
 
-import React, { FC, useMemo } from "react";
+import { FC, useMemo } from "react";
 
 import { Draw, ItemStats, SmoothingMethod, SortCriteria, getDrawsStats, sortValuesStats } from "../../helpers/DrawHelper";
 import { ValueComponentProps } from "../Value";

@@ -121,7 +121,7 @@ export interface Smoothing {
 }
 
 export const getSmoothings = (draws: Draw[], whiteList: number[]): Smoothing[] => {
-  const dates = draws.reduce((acc: Smoothing[], draw: Draw, idx: number) => {
+  const dates = draws.reduce((acc: Smoothing[], _draw: Draw, idx: number) => {
     const index = idx + 1;
     if (whiteList.includes(index)) {
       acc.push({

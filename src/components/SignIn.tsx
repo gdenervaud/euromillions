@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import firebase from "firebase/compat/app";
-import { Auth } from "firebase/auth";
+import { Auth } from "firebase/auth"; // onAuthStateChanged
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import type { User } from "firebase/auth";
@@ -29,54 +29,45 @@ const SignIn = ({ auth, onSetUserProfile }: {auth: Auth, onSetUserProfile: (user
 
   const classes = useStyles();
 
-  const [firebaseUI, setFirebaseUI] = useState<firebaseui.auth.AuthUI | null>(null);
-
   useEffect(() => {
-    if (!firebaseUI) {
-      // Initialize the FirebaseUI Widget using Firebase.
-      const ui = new firebaseui.auth.AuthUI(auth); //firebase.auth()
-      setFirebaseUI(ui);
-      ui.start("#firebaseui-auth-container", {
-        callbacks: {
-          signInSuccessWithAuthResult: authResult => { // (authResult, redirectUrl) => {
-            // Process result. This will not trigger on merge conflicts.
-            // On success redirect to signInSuccessUrl.
-            // eslint-disable-next-line no-debugger
-            onSetUserProfile(authResult.user);
-            ui.delete();
-            return false;
-          },
-          // signInFailure callback must be provided to handle merge conflicts which
-          // occur when an existing credential is linked to an anonymous user.
-          signInFailure: error => {
-            // For merge conflicts, the error.code will be
-            // 'firebaseui/anonymous-upgrade-merge-conflict'.
-            if (error.code !== "firebaseui/anonymous-upgrade-merge-conflict") {
-              return Promise.resolve();
-            }
-            // The credential the user tried to sign in with.
-            const cred = error.credential;
-            console.log(cred);
-            onSetUserProfile(null);
-            ui.delete();
-          }
+    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
+    // We track the auth state to reset firebaseUi if the user signs out.
+    ui.start("#firebaseui-auth-container", {
+      callbacks: {
+        signInSuccessWithAuthResult: authResult => { // (authResult, redirectUrl) => {
+          // Process result. This will not trigger on merge conflicts.
+          // On success redirect to signInSuccessUrl.
+          onSetUserProfile(authResult.user);
+          ui.reset();
+          return false;
         },
-        signInOptions: [
-          {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            requireDisplayName: false
+        // signInFailure callback must be provided to handle merge conflicts which
+        // occur when an existing credential is linked to an anonymous user.
+        signInFailure: error => {
+          // For merge conflicts, the error.code will be
+          // 'firebaseui/anonymous-upgrade-merge-conflict'.
+          if (error.code !== "firebaseui/anonymous-upgrade-merge-conflict") {
+            return Promise.resolve();
           }
-        ]
-      });
-    }
-    return () => {
-      try {
-        firebaseUI && firebaseUI.delete();
-      } catch (e) {
-        //already deleted
-      }
-    };
-  }, [auth, firebaseUI]);
+          // The credential the user tried to sign in with.
+          const cred = error.credential;
+          console.log(cred);
+          onSetUserProfile(null);
+          ui.reset();
+        }
+      },
+      signInOptions: [
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false
+        }
+      ]
+    });
+    // return () => {
+    //   //unregisterAuthObserver();
+    //   //ui.reset();
+    // };
+  }, [auth, onSetUserProfile]);
 
   return (
     <div className={classes.container}>

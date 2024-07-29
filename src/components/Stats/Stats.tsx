@@ -1,6 +1,6 @@
 
 
-import React, { FC, useState, useCallback, useMemo } from "react";
+import { FC, useState, useCallback, useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import Modal from "react-bootstrap/Modal";

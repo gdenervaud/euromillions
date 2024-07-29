@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 import { Favorite } from "../../helpers/DrawHelper";
 import { SwissLottoDraw } from "../../helpers/SwissLottoDrawHelper";

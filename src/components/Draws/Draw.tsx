@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

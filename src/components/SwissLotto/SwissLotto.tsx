@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Firestore } from "firebase/firestore";
 
@@ -65,15 +65,18 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
     //   saveDbItem(db, dbCollection, draw, swissLottoDrawConverter);
     // });
 
-    getDbList(db, dbCollection, swissLottoDrawConverter, "date", false).then(result => {
-      setDraws(result as SwissLottoDraw[]);
-      // console.log(JSON.stringify(result.map(d => {
-      //   const c = {...d};
-      //   delete c.lastUpdated;
-      //   return c;
-      // })));
-      setIsLoading(false);
-    });
+    getDbList(db, dbCollection, swissLottoDrawConverter, "date", false)
+      .then(result => {
+        setDraws(result as SwissLottoDraw[]);
+        // console.log(JSON.stringify(result.map(d => {
+        //   const c = {...d};
+        //   delete c.lastUpdated;
+        //   return c;
+        // })));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [db, dbCollection]);
 
   const onAddDraw = useCallback(() => {

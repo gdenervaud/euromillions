@@ -1,9 +1,9 @@
 // Your web app's Firebase configuration
 export const firebaseConfig = {
-  apiKey: "AIzaSyDpeHiDEKPpY0chqTUR4ywSOdKv89UEbfw",
-  authDomain: "euromillions-stats.firebaseapp.com",
-  projectId: "euromillions-stats",
-  storageBucket: "euromillions-stats.appspot.com",
-  messagingSenderId: "927975251473",
-  appId: "1:927975251473:web:2dc5c9e4c9a9d74a831bb0"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };

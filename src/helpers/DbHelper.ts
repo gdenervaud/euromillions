@@ -7,6 +7,7 @@ import { Draw } from "./DrawHelper";
 export const getDbList = async <DrawType extends Draw, >(db: Firestore, collectionName: string, converter: FirestoreDataConverter<DrawType>, sortByField: string, sortAscending: boolean) => {
   const colRef = collection(db, collectionName).withConverter(converter);
   const q = query(colRef, orderBy(sortByField, sortAscending?"asc":"desc"));
+
   const docsSnap = await getDocs(q);
   const list = docsSnap.docs.map(doc => doc.data());
   return list;

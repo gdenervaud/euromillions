@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import{ useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Nav from "react-bootstrap/Nav";
@@ -6,7 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { initializeFirestore, FirestoreSettings, persistentLocalCache, terminate } from "firebase/firestore";
+import { initializeFirestore, FirestoreSettings, persistentLocalCache } from "firebase/firestore"; // terminate
 import type { User } from "firebase/auth";
 import { EventKey, SelectCallback } from "@restart/ui/types";
 
@@ -24,6 +24,7 @@ import SwissLotto from "./SwissLotto/SwissLotto";
 const firestoreSettings: FirestoreSettings = {
   localCache: persistentLocalCache()
 };
+
 const app = initializeApp(firebaseConfig);
 const db = initializeFirestore(app, firestoreSettings);
 const auth = getAuth(app);
@@ -137,8 +138,8 @@ const App = () => {
       setUserProfile(user);
     });
     return () => {
-      unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-      terminate(db);
+      unregisterAuthObserver(); 
+      //terminate(db); // only if initializeFirestore is instantiated in useEffect and not globally 
     };
   }, []);
 

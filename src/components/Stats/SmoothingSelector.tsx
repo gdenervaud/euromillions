@@ -1,6 +1,6 @@
 
 
-import React, { useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 
 import Toggle from "../Toggle";

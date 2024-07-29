@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useMemo } from "react";
+import { FC, useState, useCallback, useMemo } from "react";
 
 import { getUpdatedList, DrawProps } from "../../helpers/DrawHelper";
 import { isDrawMatching, SwissLottoDraw } from "../../helpers/SwissLottoDrawHelper";

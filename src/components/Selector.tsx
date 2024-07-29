@@ -1,6 +1,6 @@
 
 
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
