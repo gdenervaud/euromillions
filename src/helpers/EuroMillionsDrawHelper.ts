@@ -1,6 +1,4 @@
 
-import { Timestamp, serverTimestamp, DocumentSnapshot, SnapshotOptions, DocumentData, FirestoreDataConverter } from "firebase/firestore";
-
 import { Draw, Favorite, FavoritesFilter, toDateString, isMatching } from "./DrawHelper";
 
 export class EuroMillionsDraw implements Draw {
@@ -9,9 +7,9 @@ export class EuroMillionsDraw implements Draw {
   numbers: number[];
   stars: number[];
   swissWin: number[];
-  lastUpdated: Date | null;
+  lastUpdated: number | null;
 
-  constructor (id: string, date: string, numbers: number[], stars: number[], swissWin: number[], lastUpdated: Date | null) {
+  constructor (id: string, date: string, numbers: number[], stars: number[], swissWin: number[], lastUpdated: number | null) {
     this.id = id;
     this.date = date;
     this.numbers = Array.isArray(numbers)?numbers:[];
@@ -29,24 +27,6 @@ export class EuroMillionsDraw implements Draw {
     this.lastUpdated = draw.lastUpdated;
   }
 }
-
-// Firestore data converter
-export const euroMillionsDrawConverter: FirestoreDataConverter<EuroMillionsDraw> = {
-  toFirestore: (draw: EuroMillionsDraw) => {
-    return {
-      id: draw.id,
-      date: Timestamp.fromDate(new Date(draw.date)),
-      numbers: draw.numbers,
-      stars: draw.stars,
-      swissWin: draw.swissWin,
-      lastUpdated: serverTimestamp()
-    };
-  },
-  fromFirestore: (snapshot: DocumentSnapshot<unknown>, options?: SnapshotOptions) => {
-    const data = snapshot.data(options) as DocumentData;
-    return new EuroMillionsDraw(data.id, toDateString(data.date.toDate()), data.numbers, data.stars, data.swissWin, data.lastUpdated.toDate());
-  }
-};
 
 export const isDrawMatching = (draw: EuroMillionsDraw, favoritesFilter: FavoritesFilter | undefined, favorites: Favorite[]): boolean => {
   if (!Array.isArray(favorites) || favorites.length !== 3) {

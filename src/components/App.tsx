@@ -1,33 +1,16 @@
-import{ useState, useEffect, useCallback } from "react";
+import{ useState, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { initializeFirestore, FirestoreSettings, persistentLocalCache } from "firebase/firestore"; // terminate
-import type { User } from "firebase/auth";
 import { EventKey, SelectCallback } from "@restart/ui/types";
+import { useConvexAuth } from "convex/react";
+import { SignInButton, SignOutButton } from "@clerk/clerk-react";
+import { useUserSync } from "../hooks/useUserSync";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-import { getDbItem } from "../helpers/DbHelper";
-import { firebaseConfig } from "../firebaseConfig";
-
-import SignIn from "./SignIn";
-import Users from "./Users";
 import EuroMillions from "./EuroMillions/EuroMillions";
 import SwissLotto from "./SwissLotto/SwissLotto";
-
-const firestoreSettings: FirestoreSettings = {
-  localCache: persistentLocalCache()
-};
-
-const app = initializeApp(firebaseConfig);
-const db = initializeFirestore(app, firestoreSettings);
-const auth = getAuth(app);
+import Users from "./Users";
 
 const useStyles = createUseStyles({
   container: {
@@ -127,66 +110,8 @@ const App = () => {
   const classes = useStyles();
 
   const [view, setView] = useState<string | null | undefined>(null);
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [canEdit, setCanEdit] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  // Listen to the Firebase Auth state and set the local state.
-  useEffect(() => {
-    const unregisterAuthObserver = auth.onAuthStateChanged(async (user: User|null) => {
-      setUserProfile(user);
-    });
-    return () => {
-      unregisterAuthObserver(); 
-      //terminate(db); // only if initializeFirestore is instantiated in useEffect and not globally 
-    };
-  }, []);
-
-  const setUserProfile = useCallback(async (user: User|null) => {
-    setCanEdit(false);
-    setIsAdmin(false);
-    if (user) {
-      // User is signed in.
-      // var displayName = user.displayName;
-      // var email = user.email;
-      // var emailVerified = user.emailVerified;
-      // var photoURL = user.photoURL;
-      // var uid = user.uid;
-      // var phoneNumber = user.phoneNumber;
-      // var providerData = user.providerData;
-      // user.getIdToken().then(function(accessToken) {
-      //   console.log(user, accessToken);
-      // });
-      setIsSignedIn(true);
-      const profile = await getDbItem(db, "users", user.uid);
-      setCanEdit(profile.role === "editor");
-      setIsAdmin(!!profile.admin);
-    } else {
-      setIsSignedIn(false);
-      if (view === "users") {
-        setView(null);
-      }
-    }
-    setIsSigningIn(false);
-  }, [view]);
-
-  const handleSignIn = useCallback(() => {
-    if (!isSigningIn) {
-      setIsSigningIn(true);
-    }
-  }, [isSigningIn]);
-
-  const handleSignOut = useCallback(() => {
-    auth.signOut()
-      // .then(() => { // handled by onAuthStateChanged
-      //   setUserProfile(null);
-      // })
-      .catch(err => {
-        console.log(err);
-        setUserProfile(null);
-      });
-  }, [setUserProfile]);
+  const { isAuthenticated } = useConvexAuth();
+  const { user: profile } = useUserSync();
 
   const handleMenuSelect: SelectCallback = useCallback((eventKey: EventKey|null) => {
     switch (eventKey) {
@@ -196,32 +121,26 @@ const App = () => {
     case "swisslotto":
       setView("swisslotto");
       break;
-    case "signin":
-      handleSignIn();
-      break;
-    case "signout":
-      handleSignOut();
-      break;
     case "users":
       setView("users");
       break;
     default: // home
       setView(undefined);
     }
-  }, [handleSignIn, handleSignOut]);
+  }, []);
 
   const menuTitle = (<FontAwesomeIcon icon="bars" title="menu" />);
 
   return (
     <div className={classes.container}>
-      {view === "users" && isAdmin?
+      {view === "users" && profile?.admin?
         <Users />
         :
         view === "euromillions"?
-          <EuroMillions db={db} dbCollection="euromillions-draws" canEdit={canEdit || isAdmin} />
+          <EuroMillions dbCollection="euromillions_draws" canEdit={profile?.role === "editor" || profile?.admin} />
           :
           view === "swisslotto"?
-            <SwissLotto db={db} dbCollection="swisslotto-draws" canEdit={canEdit || isAdmin} />
+            <SwissLotto dbCollection="swisslotto_draws" canEdit={profile?.role === "editor" || profile?.admin} />
             :
             <div className={classes.pannel}>
               <button onClick={() => setView("euromillions")} title="EuroMillions">
@@ -234,7 +153,7 @@ const App = () => {
       }
       <Nav className={classes.menuBtn} onSelect={handleMenuSelect}>
         <NavDropdown title={menuTitle} id="nav-dropdown">
-          {!!isAdmin && (
+          {!!profile?.admin && (
             <>
               <NavDropdown.Item eventKey="users"><FontAwesomeIcon icon="users" title="users" /> Users</NavDropdown.Item>
               <NavDropdown.Divider />
@@ -258,17 +177,18 @@ const App = () => {
               <NavDropdown.Divider />
             </>
           )}
-          {isSignedIn && (
-            <NavDropdown.Item eventKey="signout"><FontAwesomeIcon icon="sign-out-alt" title="sign out" /> Sign out</NavDropdown.Item>
+          {isAuthenticated && (
+            <SignOutButton> 
+              <NavDropdown.Item><FontAwesomeIcon icon="sign-out-alt" title="sign out" /> Sign out</NavDropdown.Item>
+            </SignOutButton>
           )}
-          {!isSignedIn && !isSigningIn && (
-            <NavDropdown.Item eventKey="signin"><FontAwesomeIcon icon="sign-in-alt" title="sign in" /> Sign in</NavDropdown.Item>
+          {!isAuthenticated && (
+            <SignInButton>
+              <NavDropdown.Item><FontAwesomeIcon icon="sign-in-alt" title="sign in" /> Sign in</NavDropdown.Item>
+            </SignInButton>
           )}
         </NavDropdown>
       </Nav>
-      {isSigningIn && (
-        <SignIn auth={auth} onSetUserProfile={setUserProfile} />
-      )}
     </div>
   );
 };

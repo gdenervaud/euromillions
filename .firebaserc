@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "euromillions-stats",
-    "staging": "euromillions-stats"
-  },
-  "targets": {},
-  "etags": {}
-}

@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Firestore } from "firebase/firestore";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 import { Tabs } from "../Tabs";
 import { Loader } from "../Loader";
@@ -8,42 +9,45 @@ import { Draws } from "../Draws/Draws";
 import { Draw } from "./Draw";
 import { Stats } from "./Stats";
 
-import { getUpdatedList } from "../../helpers/DrawHelper";
-import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
-import { toDateString } from "../../helpers/DrawHelper";
-import { SwissLottoDraw, swissLottoDrawConverter, isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
+import { getUpdatedList, toDateString } from "../../helpers/DrawHelper";
+import { SwissLottoDraw, isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
-// import { draws as defaultDraws } from "../../data/swissLottoDraws";
 
 const SwissLottoLocalStorageKey = "SwissLotto";
-const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(SwissLottoLocalStorageKey))?null:localStorage.getItem(SwissLottoLocalStorageKey);
+const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(SwissLottoLocalStorageKey)) ? null : localStorage.getItem(SwissLottoLocalStorageKey);
 let saved_favorite: number[][] = [[], []];
 try {
-  const res = JSON.parse(saved_favorites_string?saved_favorites_string:"");
+  const res = JSON.parse(saved_favorites_string ? saved_favorites_string : "");
   const [numbers, chance] = res;
   saved_favorite = [
-    Array.isArray(numbers)?numbers:[],
-    Array.isArray(chance)?chance:[]
+    Array.isArray(numbers) ? numbers : [],
+    Array.isArray(chance) ? chance : []
   ];
 } catch (e) {
   //
 }
 
 interface SwissLottoProps {
-  db: Firestore;
   dbCollection: string;
   canEdit: boolean;
 }
 
-const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
+const SwissLotto = ({ dbCollection, canEdit }: SwissLottoProps) => {
+  const dbDrawsData = useQuery(api.draws.list, { collection: dbCollection });
+  const saveDrawMutation = useMutation(api.draws.save);
+  const deleteDrawMutation = useMutation(api.draws.remove);
 
-  const [draws, setDraws] = useState<SwissLottoDraw[]>([]);
+  const dbDraws = useMemo(() =>
+    dbDrawsData?.map(d => new SwissLottoDraw(d.id, d.date, d.numbers, d.chance, d._creationTime)) || [],
+    [dbDrawsData]
+  );
+
+  const [localDraws, setLocalDraws] = useState<SwissLottoDraw[]>([]);
   const [view, setView] = useState("DRAWS");
-
   const [favorites, setFavorites] = useState(saved_favorite);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const draws = useMemo(() => [...localDraws, ...dbDraws], [localDraws, dbDraws]);
 
   const tabs = [
     {
@@ -58,41 +62,26 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
     }
   ];
 
-  useEffect(() => {
-
-    // defaultTirages.forEach(tirage => {
-    //   const draw = new EuroMillionsDraw(uuidv4(), tirage.date, tirage.numbers, tirage.stars, null);
-    //   saveDbItem(db, dbCollection, draw, swissLottoDrawConverter);
-    // });
-
-    getDbList(db, dbCollection, swissLottoDrawConverter, "date", false)
-      .then(result => {
-        setDraws(result as SwissLottoDraw[]);
-        // console.log(JSON.stringify(result.map(d => {
-        //   const c = {...d};
-        //   delete c.lastUpdated;
-        //   return c;
-        // })));
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [db, dbCollection]);
-
   const onAddDraw = useCallback(() => {
     const draw = new SwissLottoDraw(uuidv4(), toDateString(new Date()), [], null, null);
-    setDraws(draws => [draw, ...draws]);
+    setLocalDraws(draws => [draw, ...draws]);
   }, []);
+
   const onSaveDraw = useCallback(async (draw: SwissLottoDraw) => {
-    await saveDbItem<SwissLottoDraw>(db, dbCollection, draw, swissLottoDrawConverter);
-    setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
-  }, [db, dbCollection]);
-  const onDeleteDraw = useCallback((draw: SwissLottoDraw) => {
-    if (draw.lastUpdated) {
-      deleteDbItem(db, dbCollection, draw.id);
+    if (localDraws.some(d => d.id === draw.id)) {
+      setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     }
-    setDraws(draws => draws.filter(d => d.id !== draw.id));
-  }, [db, dbCollection]);
+    const { ...plainDraw } = draw;
+    await saveDrawMutation({ collection: dbCollection, ...plainDraw });
+  }, [dbCollection, saveDrawMutation, localDraws]);
+
+  const onDeleteDraw = useCallback((draw: SwissLottoDraw) => {
+    if (localDraws.some(d => d.id === draw.id)) {
+      setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
+    } else if (draw.id) {
+      deleteDrawMutation({ collection: dbCollection, id: draw.id });
+    }
+  }, [dbCollection, deleteDrawMutation, localDraws]);
 
   const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
@@ -109,7 +98,7 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
       list: list,
       itemComponent: components[index],
       onItemToggle: (value?: number, add?: boolean) => {
-        const updatedList = value?getUpdatedList(favorites[index], value, add):[];
+        const updatedList = value ? getUpdatedList(favorites[index], value, add) : [];
         const updatedFav = [...favorites];
         updatedFav[index] = updatedList;
         updateFavorites(updatedFav);
@@ -117,12 +106,14 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
     }));
   }, [favorites, updateFavorites]);
 
+  const isLoading = dbDrawsData === undefined;
+
   return (
     <Tabs title="Swiss Lotto" logo="/swissLotto.png" tabs={tabs} selected={view} onClick={setView} >
-      {isLoading?
+      {isLoading ?
         <Loader text="Récupération des tirages Swiss Lotto..." shadow={false} />
         :
-        view !== "STATS"?
+        view !== "STATS" ?
           <Draws<SwissLottoDraw> draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
           :
           <Stats draws={draws} favorites={fav} />
@@ -130,6 +121,5 @@ const SwissLotto = ({ db, dbCollection, canEdit }: SwissLottoProps) => {
     </Tabs>
   );
 };
-
 
 export default SwissLotto;

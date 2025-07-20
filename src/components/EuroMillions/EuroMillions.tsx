@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Firestore } from "firebase/firestore";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 import { Tabs } from "../Tabs";
 import { Loader } from "../Loader";
@@ -12,39 +13,43 @@ import { Star } from "./Star";
 import { SwissWin } from "./SwissWin";
 
 import { getUpdatedList, toDateString } from "../../helpers/DrawHelper";
-import { getDbList, saveDbItem, deleteDbItem } from "../../helpers/DbHelper";
-import { EuroMillionsDraw, euroMillionsDrawConverter, isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
-// import { draws as defaultDraws } from "../../data/euroMillionsDraws";
+import { EuroMillionsDraw, isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
 
 const EuroMillionsLocalStorageKey = "EuroMillions";
-const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(EuroMillionsLocalStorageKey))?null:localStorage.getItem(EuroMillionsLocalStorageKey);
+const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(EuroMillionsLocalStorageKey)) ? null : localStorage.getItem(EuroMillionsLocalStorageKey);
 let saved_favorite: number[][] = [[], [], []];
 try {
-  const res = JSON.parse(saved_favorites_string?saved_favorites_string:"");
+  const res = JSON.parse(saved_favorites_string ? saved_favorites_string : "");
   const [numbers, stars, swissWin] = res;
   saved_favorite = [
-    Array.isArray(numbers)?numbers:[],
-    Array.isArray(stars)?stars:[],
-    Array.isArray(swissWin)?swissWin:[]
+    Array.isArray(numbers) ? numbers : [],
+    Array.isArray(stars) ? stars : [],
+    Array.isArray(swissWin) ? swissWin : []
   ];
 } catch (e) {
   //
 }
 
 interface EuroMillionsProps {
-  db: Firestore;
   dbCollection: string;
   canEdit: boolean;
 }
 
-const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
+const EuroMillions = ({ dbCollection, canEdit }: EuroMillionsProps) => {
+  const dbDrawsData = useQuery(api.draws.list, { collection: dbCollection });
+  const saveDrawMutation = useMutation(api.draws.save);
+  const deleteDrawMutation = useMutation(api.draws.remove);
 
-  const [draws, setDraws] = useState<EuroMillionsDraw[]>([]);
+  const dbDraws = useMemo(() =>
+    dbDrawsData?.map(d => new EuroMillionsDraw(d.id, d.date, d.numbers, d.stars, d.swissWin, d._creationTime)) || [],
+    [dbDrawsData]
+  );
+
+  const [localDraws, setLocalDraws] = useState<EuroMillionsDraw[]>([]);
   const [view, setView] = useState("DRAWS");
-
   const [favorites, setFavorites] = useState(saved_favorite);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const draws = useMemo(() => [...localDraws, ...dbDraws], [localDraws, dbDraws]);
 
   const tabs = [
     {
@@ -59,41 +64,26 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
     }
   ];
 
-  useEffect(() => {
-    
-    // defaultTirages.forEach(tirage => {
-    //   const draw = new EuroMillionsDraw(uuidv4(), tirage.date, tirage.numbers, tirage.stars, null);
-    //   saveDbItem(db, dbCollection, draw, euroMillionsDrawConverter);
-    // });
-
-    getDbList(db, dbCollection, euroMillionsDrawConverter, "date", false)
-      .then(result  => {
-        setDraws(result as EuroMillionsDraw[]);
-        // console.log(JSON.stringify(result.map(d => {
-        //   const c = {...d};
-        //   delete c.lastUpdated;
-        //   return c;
-        // })));
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [db, dbCollection]);
-
   const onAddDraw = useCallback(() => {
     const draw = new EuroMillionsDraw(uuidv4(), toDateString(new Date()), [], [], [], null);
-    setDraws(draws => [draw, ...draws]);
+    setLocalDraws(draws => [draw, ...draws]);
   }, []);
+
   const onSaveDraw = useCallback(async (draw: EuroMillionsDraw) => {
-    await saveDbItem<EuroMillionsDraw>(db, dbCollection, draw, euroMillionsDrawConverter);
-    setDraws(draws => draws.map(d => d.id === draw.id?draw:d));
-  }, [db, dbCollection]);
-  const onDeleteDraw = useCallback((draw: EuroMillionsDraw) => {
-    if (draw.lastUpdated) {
-      deleteDbItem(db, dbCollection, draw.id);
+    if (localDraws.some(d => d.id === draw.id)) {
+      setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     }
-    setDraws(draws => draws.filter(d => d.id !== draw.id));
-  }, [db, dbCollection]);
+    const { ...plainDraw } = draw;
+    await saveDrawMutation({ collection: dbCollection, ...plainDraw });
+  }, [dbCollection, saveDrawMutation, localDraws]);
+
+  const onDeleteDraw = useCallback((draw: EuroMillionsDraw) => {
+    if (localDraws.some(d => d.id === draw.id)) {
+      setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
+    } else if (draw.id) {
+      deleteDrawMutation({ collection: dbCollection, id: draw.id });
+    }
+  }, [dbCollection, deleteDrawMutation, localDraws]);
 
   const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
@@ -110,7 +100,7 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
       list: list,
       itemComponent: components[index],
       onItemToggle: (value?: number, add?: boolean) => {
-        const updatedList = value?getUpdatedList(favorites[index], value, add):[];
+        const updatedList = value ? getUpdatedList(favorites[index], value, add) : [];
         const updatedFav = [...favorites];
         updatedFav[index] = updatedList;
         updateFavorites(updatedFav);
@@ -118,12 +108,14 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
     }));
   }, [favorites, updateFavorites]);
 
+  const isLoading = dbDrawsData === undefined;
+
   return (
     <Tabs title="Euro Millions" logo="/euroMillions.png" tabs={tabs} selected={view} onClick={setView} >
-      {isLoading?
+      {isLoading ?
         <Loader text="Récupération des tirages Euro Millions..." shadow={false} />
         :
-        view !== "STATS"?
+        view !== "STATS" ?
           <Draws<EuroMillionsDraw> draws={draws} favorites={fav} DrawComponent={Draw} canEdit={canEdit} onAddDraw={onAddDraw} onSaveDraw={onSaveDraw} onDeleteDraw={onDeleteDraw} onResetFavorites={handleResetFavorites} isDrawMatching={isDrawMatching} />
           :
           <Stats draws={draws} favorites={fav} />
@@ -131,6 +123,5 @@ const EuroMillions = ({ db, dbCollection, canEdit }: EuroMillionsProps) => {
     </Tabs>
   );
 };
-
 
 export default EuroMillions;

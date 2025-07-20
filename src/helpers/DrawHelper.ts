@@ -30,7 +30,7 @@ export enum SmoothingMethod {
 export interface Draw {
   id: string;
   date: string;
-  lastUpdated: Date | null;
+  lastUpdated: number | null;
   setDraw: (draw: Draw) => void;
 }
 
@@ -186,13 +186,13 @@ export interface MovingAverage {
 }
 
 export interface Trend extends MovingAverage {
-  date: Date;
+  date: string;
 }
 
 export interface CombinedTrend {
   sma: MovingAverage;
   ema: MovingAverage;
-  date: Date;
+  date: string;
 }
 
 export interface ValueStats {
@@ -213,7 +213,7 @@ export interface ItemStats extends ValueStats {
   smoothingMethod: SmoothingMethod;
 }
 
-export const compareDates = (a: Date, b: Date) => {
+export const compareDates = (a: string, b: string) => {
   if (a > b) {
     return -1;
   }
