@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm ci
       - name: Deploy Convex functions
-        run: npx convex deploy --prod
+        run: npx convex deploy
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
