@@ -3,7 +3,7 @@
 
 import { createUseStyles } from "react-jss";
 
-import { ItemStats } from "../../helpers/DrawHelper";
+import type { ItemStats } from "../../types";
 import { Item } from "./Item";
 
 interface Theme {

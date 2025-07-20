@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 
-import { Draw, getPeriods } from "../../helpers/DrawHelper";
+import type { Draw } from "../../types";
+import { getPeriods } from "../../helpers/DrawHelper";
 import { Selector } from "../Selector";
 
 interface PeriodSelectorProps {

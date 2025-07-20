@@ -1,5 +1,14 @@
-import { FC } from "react";
-import { ValueComponentProps } from "../components/Value";
+import { 
+  Draw, 
+  FavoritesFilter, 
+  SmoothingMethod, 
+  TrendValue, 
+  SortCriteria, 
+  Period, 
+  Smoothing, 
+  DrawStats, 
+  ValueStats 
+} from "../types";
 
 class StatsHelpers {
   static average(values: number[]): number {
@@ -22,38 +31,7 @@ class StatsHelpers {
   }
 }
 
-export enum SmoothingMethod {
-  sma = "sma",
-  ema = "ema"
-}
 
-export interface Draw {
-  id: string;
-  date: string;
-  lastUpdated: number | null;
-  setDraw: (draw: Draw) => void;
-}
-
-export interface Favorite {
-  list: number[];
-  itemComponent:  FC<ValueComponentProps>;
-  onItemToggle: (value?: number, add?: boolean) => void;
-}
-
-export enum FavoritesFilter {
-  all = "all",
-  some = "some",
-  off = "off"
-}
-
-export interface DrawProps<DrawType> {
-  draw: DrawType;
-  favorites: Favorite[];
-  canEdit: boolean;
-  onSave: (draw: DrawType) => void;
-  onDelete: (draw: DrawType) => void;
-  favoritesFilter?: FavoritesFilter;
-}
 
 export const isMatching = (list: number[] | number | null, values: number[], filter?: FavoritesFilter | undefined): boolean => {
   if (!filter) {
@@ -93,10 +71,7 @@ export const getUpdatedList = (list: number[], number: number, add?: boolean) =>
   return result;
 };
 
-export interface Period {
-  name: string;
-  value: number;
-}
+
 
 export const getPeriods = (draws: Draw[], whiteList: number[]): Period[] => {
   const dates = draws.reduce((acc, draw: Draw, idx: number) => {
@@ -115,10 +90,7 @@ export const getPeriods = (draws: Draw[], whiteList: number[]): Period[] => {
   return dates;
 };
 
-export interface Smoothing {
-  name: string;
-  value: number;
-}
+
 
 export const getSmoothings = (draws: Draw[], whiteList: number[]): Smoothing[] => {
   const dates = draws.reduce((acc: Smoothing[], _draw: Draw, idx: number) => {
@@ -134,14 +106,7 @@ export const getSmoothings = (draws: Draw[], whiteList: number[]): Smoothing[] =
   return dates;
 };
 
-interface DrawStats {
-  average:  number;
-  standardDeviation: number;
-  above1: number;
-  above2: number;
-  below1: number;
-  below2: number;
-}
+
 
 const getDrawStats = (values: number[]): DrawStats => {
   const average = StatsHelpers.average(values);
@@ -156,13 +121,7 @@ const getDrawStats = (values: number[]): DrawStats => {
   };
 };
 
-export enum TrendValue {
-  min = -2,
-  low = -1,
-  neutral = 0,
-  high = 1,
-  max = 2
-}
+
 
 const getTrend = (stats: DrawStats, value: number): TrendValue => {
   if (value > stats.above2) {
@@ -179,39 +138,6 @@ const getTrend = (stats: DrawStats, value: number): TrendValue => {
   }
   return TrendValue.neutral;
 };
-
-export interface MovingAverage {
-  score: number,
-  trend: TrendValue
-}
-
-export interface Trend extends MovingAverage {
-  date: string;
-}
-
-export interface CombinedTrend {
-  sma: MovingAverage;
-  ema: MovingAverage;
-  date: string;
-}
-
-export interface ValueStats {
-  value: number;
-  success: number;
-  period: number;
-  smoothing: number;
-  percentageOfSuccesses: number;
-  trend: CombinedTrend;
-  trends: CombinedTrend[],
-  lastSuccess: number;
-  drawSize: number;
-  maxValue: number;
-}
-export interface ItemStats extends ValueStats {
-  isFavorite: boolean;
-  Component: FC<ValueComponentProps>;
-  smoothingMethod: SmoothingMethod;
-}
 
 export const compareDates = (a: string, b: string) => {
   if (a > b) {
@@ -301,12 +227,7 @@ export const getDrawsStats = <DrawType extends Draw, >(maxValue: number, drawSiz
   return result;
 };
 
-export enum SortCriteria {
-  success = "success",
-  trend = "trend",
-  lastSuccess = "lastSuccess",
-  value = "value"
-}
+
 
 export const sortValuesStats = (valuesStats: ValueStats[], sortCriteria: SortCriteria, sortAscending: boolean, smoothingMethod: SmoothingMethod): ValueStats[] => {
   const result = valuesStats.sort((a, b) => {

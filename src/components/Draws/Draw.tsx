@@ -221,7 +221,7 @@ export const Draw = ({
   const classes = useStyles({theme: theme});
 
   const handleSetDeletable = (e: FormEvent<HTMLButtonElement>) => {
-    e && e.stopPropagation();
+    e?.stopPropagation();
     setDeleteMode(true);
   };
 

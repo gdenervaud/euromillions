@@ -13,7 +13,8 @@ import { Star } from "./Star";
 import { SwissWin } from "./SwissWin";
 
 import { getUpdatedList, toDateString } from "../../helpers/DrawHelper";
-import { EuroMillionsDraw, isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
+import type { EuroMillionsDraw } from "../../types";
+import { isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
 
 const EuroMillionsLocalStorageKey = "EuroMillions";
 const saved_favorites_string = (typeof Storage === "undefined" || !localStorage.getItem(EuroMillionsLocalStorageKey)) ? null : localStorage.getItem(EuroMillionsLocalStorageKey);
@@ -27,21 +28,26 @@ try {
     Array.isArray(swissWin) ? swissWin : []
   ];
 } catch (e) {
-  //
+  console.log(e);
 }
 
 interface EuroMillionsProps {
-  dbCollection: string;
   canEdit: boolean;
 }
 
-const EuroMillions = ({ dbCollection, canEdit }: EuroMillionsProps) => {
-  const dbDrawsData = useQuery(api.draws.list, { collection: dbCollection });
-  const saveDrawMutation = useMutation(api.draws.save);
-  const deleteDrawMutation = useMutation(api.draws.remove);
+const EuroMillions = ({ canEdit }: EuroMillionsProps) => {
+  const dbDrawsData = useQuery(api.euroMillions.list);
+  const saveDrawMutation = useMutation(api.euroMillions.save);
+  const deleteDrawMutation = useMutation(api.euroMillions.remove);
 
   const dbDraws = useMemo(() =>
-    dbDrawsData?.map(d => new EuroMillionsDraw(d.id, d.date, d.numbers, d.stars, d.swissWin, d._creationTime)) || [],
+    dbDrawsData?.map(d => ({
+      id: d._id,
+      date: d.date,
+      numbers: d.numbers,
+      stars: d.stars,
+      swissWin: d.swissWin || []
+    })) || [],
     [dbDrawsData]
   );
 
@@ -65,7 +71,13 @@ const EuroMillions = ({ dbCollection, canEdit }: EuroMillionsProps) => {
   ];
 
   const onAddDraw = useCallback(() => {
-    const draw = new EuroMillionsDraw(uuidv4(), toDateString(new Date()), [], [], [], null);
+    const draw: EuroMillionsDraw = {
+      id: uuidv4(),
+      date: toDateString(new Date()),
+      numbers: [],
+      stars: [],
+      swissWin: []
+    };
     setLocalDraws(draws => [draw, ...draws]);
   }, []);
 
@@ -73,21 +85,24 @@ const EuroMillions = ({ dbCollection, canEdit }: EuroMillionsProps) => {
     if (localDraws.some(d => d.id === draw.id)) {
       setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     }
-    const { ...plainDraw } = draw;
-    await saveDrawMutation({ collection: dbCollection, ...plainDraw });
-  }, [dbCollection, saveDrawMutation, localDraws]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...plainDraw } = draw;
+    await saveDrawMutation({ ...plainDraw });
+  }, [saveDrawMutation, localDraws]);
 
   const onDeleteDraw = useCallback((draw: EuroMillionsDraw) => {
     if (localDraws.some(d => d.id === draw.id)) {
       setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     } else if (draw.id) {
-      deleteDrawMutation({ collection: dbCollection, id: draw.id });
+      deleteDrawMutation({ id: draw.id, date: draw.date });
     }
-  }, [dbCollection, deleteDrawMutation, localDraws]);
+  }, [deleteDrawMutation, localDraws]);
 
   const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
-    typeof Storage !== "undefined" && localStorage.setItem(EuroMillionsLocalStorageKey, JSON.stringify(fav));
+    if (typeof Storage !== "undefined") {
+      localStorage.setItem(EuroMillionsLocalStorageKey, JSON.stringify(fav));
+    }
   }, []);
 
   const handleResetFavorites = useCallback(() => {

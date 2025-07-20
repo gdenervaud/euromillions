@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 
-import { Trend } from "../../helpers/DrawHelper";
+import { Trend } from "../../types";
 
 const useStyles = createUseStyles({
   bar: {

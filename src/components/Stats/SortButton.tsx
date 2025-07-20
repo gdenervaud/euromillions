@@ -3,7 +3,7 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 
-import { SortCriteria } from "../../helpers/DrawHelper";
+import { SortCriteria } from "../../types";
 
 const useStyles = createUseStyles({
   sortBtn: {

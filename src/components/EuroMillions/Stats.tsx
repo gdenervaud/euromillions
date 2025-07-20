@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
-import { Favorite } from "../../helpers/DrawHelper";
-import { EuroMillionsDraw } from "../../helpers/EuroMillionsDrawHelper";
+import type { Favorite, EuroMillionsDraw } from "../../types";
 import { Stats as StatsComponent, Serie } from "../Stats/Stats";
 import { Number } from "./Number";
 import { Star } from "./Star";

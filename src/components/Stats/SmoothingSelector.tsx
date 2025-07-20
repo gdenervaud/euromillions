@@ -5,7 +5,9 @@ import { createUseStyles } from "react-jss";
 
 import Toggle from "../Toggle";
 import { Selector } from "../Selector";
-import { Draw, SmoothingMethod, getSmoothings } from "../../helpers/DrawHelper";
+import type { Draw } from "../../types";
+import { SmoothingMethod } from "../../types";
+import { getSmoothings } from "../../helpers/DrawHelper";
 
 
 const useStyles = createUseStyles({

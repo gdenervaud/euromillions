@@ -2,7 +2,7 @@
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { TrendValue } from "../../helpers/DrawHelper";
+import { TrendValue } from "../../types";
 
 const useStyles = createUseStyles({
   arrow: {

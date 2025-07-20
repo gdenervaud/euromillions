@@ -137,10 +137,10 @@ const App = () => {
         <Users />
         :
         view === "euromillions"?
-          <EuroMillions dbCollection="euromillions_draws" canEdit={profile?.role === "editor" || profile?.admin} />
+          <EuroMillions canEdit={profile?.role === "editor" || !!profile?.admin} />
           :
           view === "swisslotto"?
-            <SwissLotto dbCollection="swisslotto_draws" canEdit={profile?.role === "editor" || profile?.admin} />
+            <SwissLotto canEdit={profile?.role === "editor" || !!profile?.admin} />
             :
             <div className={classes.pannel}>
               <button onClick={() => setView("euromillions")} title="EuroMillions">

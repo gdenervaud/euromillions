@@ -1,7 +1,7 @@
 
 import { createUseStyles } from "react-jss";
 
-import { ItemStats }from "../../helpers/DrawHelper";
+import type { ItemStats } from "../../types";
 import { Value } from "../Value";
 import { TrendArrow } from "./TrendArrow";
 import { LastSuccess } from "./LastSuccess";

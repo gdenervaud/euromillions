@@ -3,7 +3,8 @@
 
 import { createUseStyles } from "react-jss";
 
-import { SortCriteria, ItemStats } from "../../helpers/DrawHelper";
+import type { ItemStats } from "../../types";
+import { SortCriteria } from "../../types";
 import { SortButton } from "./SortButton";
 import { Row } from "./Row";
 

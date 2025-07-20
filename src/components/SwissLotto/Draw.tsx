@@ -1,14 +1,19 @@
 import { FC, useState, useCallback, useMemo } from "react";
 
-import { getUpdatedList, DrawProps } from "../../helpers/DrawHelper";
-import { isDrawMatching, SwissLottoDraw } from "../../helpers/SwissLottoDrawHelper";
+import type { DrawProps, SwissLottoDraw } from "../../types";
+import { getUpdatedList } from "../../helpers/DrawHelper";
+import { isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
 import { Draw as DrawComponent, List } from "../Draws/Draw";
 
-export const Draw: FC<DrawProps<SwissLottoDraw>> = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter }) => {
+interface SwissLottoDrawProps extends DrawProps<SwissLottoDraw> {
+  isNew?: boolean;
+}
 
-  const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
+export const Draw: FC<SwissLottoDrawProps> = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter, isNew = false }) => {
+
+  const [readOnly, setReadOnly] = useState(!isNew);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [date, setDate] = useState(draw.date);
@@ -61,7 +66,7 @@ export const Draw: FC<DrawProps<SwissLottoDraw>> = ({ draw, favorites, canEdit, 
     setNumbers([...draw.numbers]);
     setChance(draw.chance);
     setReadOnly(true);
-    if (!draw.lastUpdated) {
+    if (isNew) {
       setIsDeleting(true);
       await onDelete(draw);
       setIsDeleting(false);
@@ -111,7 +116,7 @@ export const Draw: FC<DrawProps<SwissLottoDraw>> = ({ draw, favorites, canEdit, 
       lists={lists}
       canEdit={canEdit}
       readOnly={readOnly || !canEdit}
-      isNew={!draw.lastUpdated}
+      isNew={isNew}
       onDateChange={handleDateChange}
       onEdit={handleEdit}
       onSave={handleSave}

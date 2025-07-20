@@ -10,7 +10,8 @@ import { Draw } from "./Draw";
 import { Stats } from "./Stats";
 
 import { getUpdatedList, toDateString } from "../../helpers/DrawHelper";
-import { SwissLottoDraw, isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
+import type { SwissLottoDraw } from "../../types";
+import { isDrawMatching } from "../../helpers/SwissLottoDrawHelper";
 import { Number } from "./Number";
 import { Chance } from "./Chance";
 
@@ -25,21 +26,25 @@ try {
     Array.isArray(chance) ? chance : []
   ];
 } catch (e) {
-  //
+  console.log(e);
 }
 
 interface SwissLottoProps {
-  dbCollection: string;
   canEdit: boolean;
 }
 
-const SwissLotto = ({ dbCollection, canEdit }: SwissLottoProps) => {
-  const dbDrawsData = useQuery(api.draws.list, { collection: dbCollection });
-  const saveDrawMutation = useMutation(api.draws.save);
-  const deleteDrawMutation = useMutation(api.draws.remove);
+const SwissLotto = ({ canEdit }: SwissLottoProps) => {
+  const dbDrawsData = useQuery(api.swissLotto.list);
+  const saveDrawMutation = useMutation(api.swissLotto.save);
+  const deleteDrawMutation = useMutation(api.swissLotto.remove);
 
   const dbDraws = useMemo(() =>
-    dbDrawsData?.map(d => new SwissLottoDraw(d.id, d.date, d.numbers, d.chance, d._creationTime)) || [],
+    dbDrawsData?.map(d => ({
+      id: d._id,
+      date: d.date,
+      numbers: d.numbers,
+      chance: d.chance ?? null
+    })) || [],
     [dbDrawsData]
   );
 
@@ -63,7 +68,12 @@ const SwissLotto = ({ dbCollection, canEdit }: SwissLottoProps) => {
   ];
 
   const onAddDraw = useCallback(() => {
-    const draw = new SwissLottoDraw(uuidv4(), toDateString(new Date()), [], null, null);
+    const draw: SwissLottoDraw = {
+      id: uuidv4(),
+      date: toDateString(new Date()),
+      numbers: [],
+      chance: null
+    };
     setLocalDraws(draws => [draw, ...draws]);
   }, []);
 
@@ -71,21 +81,27 @@ const SwissLotto = ({ dbCollection, canEdit }: SwissLottoProps) => {
     if (localDraws.some(d => d.id === draw.id)) {
       setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     }
-    const { ...plainDraw } = draw;
-    await saveDrawMutation({ collection: dbCollection, ...plainDraw });
-  }, [dbCollection, saveDrawMutation, localDraws]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...plainDraw } = draw;
+    await saveDrawMutation({ 
+      ...plainDraw,
+      chance: plainDraw.chance ?? undefined
+    });
+  }, [saveDrawMutation, localDraws]);
 
   const onDeleteDraw = useCallback((draw: SwissLottoDraw) => {
     if (localDraws.some(d => d.id === draw.id)) {
       setLocalDraws(draws => draws.filter(d => d.id !== draw.id));
     } else if (draw.id) {
-      deleteDrawMutation({ collection: dbCollection, id: draw.id });
+      deleteDrawMutation({ id: draw.id, date: draw.date });
     }
-  }, [dbCollection, deleteDrawMutation, localDraws]);
+  }, [deleteDrawMutation, localDraws]);
 
   const updateFavorites = useCallback((fav: number[][]) => {
     setFavorites(fav);
-    typeof Storage !== "undefined" && localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
+    if (typeof Storage !== "undefined") {
+      localStorage.setItem(SwissLottoLocalStorageKey, JSON.stringify(fav));
+    }
   }, []);
 
   const handleResetFavorites = useCallback(() => {

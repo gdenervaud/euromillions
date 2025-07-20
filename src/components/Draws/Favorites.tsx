@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { createUseStyles } from "react-jss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Favorite } from "../../helpers/DrawHelper";
+import type { Favorite } from "../../types";
 import { Value } from "../Value";
 import { FavoriteIcon } from "../FavoriteIcon";
 

@@ -6,7 +6,8 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Draw, SmoothingMethod, SortCriteria } from "../../helpers/DrawHelper";
+import type { Draw } from "../../types";
+import { SmoothingMethod, SortCriteria } from "../../types";
 import { ValueComponentProps } from "../Value";
 import Toggle from "../Toggle";
 import { Favorites } from "./Favorites";
@@ -130,7 +131,7 @@ export const Stats = <DrawType extends Draw, >({ draws, series, columns}: StatsP
 
   const handleOnShowAsGridChange = useCallback((value: unknown): void => {
     setShowAsGrid(value as boolean);
-    setSortCriteria(SortCriteria.value),
+    setSortCriteria(SortCriteria.value);
     setSortAscending(true);
     setShowOnlyFavorites(false);
   }, [setShowAsGrid]);

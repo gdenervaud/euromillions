@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
-import { Favorite } from "../../helpers/DrawHelper";
-import { SwissLottoDraw } from "../../helpers/SwissLottoDrawHelper";
+import type { Favorite, SwissLottoDraw } from "../../types";
 import { Stats as StatsComponent, Serie } from "../Stats/Stats";
 import { Number } from "./Number";
 import { Chance } from "./Chance";

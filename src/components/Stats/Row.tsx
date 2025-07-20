@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
-import { ItemStats, SmoothingMethod, Trend }from "../../helpers/DrawHelper";
+import type { ItemStats, Trend } from "../../types";
+import { SmoothingMethod } from "../../types";
 import { Value } from "../Value";
 import { LastSuccess } from "./LastSuccess";
 import { Bar } from "./Bar";

@@ -2,7 +2,9 @@
 
 import { FC, useMemo } from "react";
 
-import { Draw, ItemStats, SmoothingMethod, SortCriteria, getDrawsStats, sortValuesStats } from "../../helpers/DrawHelper";
+import type { Draw, ItemStats } from "../../types";
+import { SmoothingMethod, SortCriteria } from "../../types";
+import { getDrawsStats, sortValuesStats } from "../../helpers/DrawHelper";
 import { ValueComponentProps } from "../Value";
 import { Grid } from "./Grid";
 import { List } from "./List";

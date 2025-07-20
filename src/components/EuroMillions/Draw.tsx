@@ -1,16 +1,26 @@
 import { FC, useState, useCallback, useMemo } from "react";
-
-import { getUpdatedList, DrawProps } from "../../helpers/DrawHelper";
-import { isDrawMatching, EuroMillionsDraw } from "../../helpers/EuroMillionsDrawHelper";
-
 import { Draw as DrawComponent, List } from "../Draws/Draw";
+import type { Favorite, EuroMillionsDraw } from "../../types";
+import { FavoritesFilter } from "../../types";
+import { getUpdatedList } from "../../helpers/DrawHelper";
+import { isDrawMatching } from "../../helpers/EuroMillionsDrawHelper";
 import { Number } from "./Number";
 import { Star } from "./Star";
 import { SwissWin } from "./SwissWin";
 
-export const Draw: FC<DrawProps<EuroMillionsDraw>> = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter }) => {
+interface EuroMillionsDrawProps {
+  draw: EuroMillionsDraw;
+  favorites: Favorite[];
+  canEdit: boolean;
+  onSave: (draw: EuroMillionsDraw) => void;
+  onDelete: (draw: EuroMillionsDraw) => void;
+  favoritesFilter?: FavoritesFilter;
+  isNew?: boolean;
+}
 
-  const [readOnly, setReadOnly] = useState(!!draw.lastUpdated);
+export const Draw: FC<EuroMillionsDrawProps> = ({ draw, favorites, canEdit, onSave, onDelete, favoritesFilter, isNew = false }) => {
+
+  const [readOnly, setReadOnly] = useState(!isNew);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [date, setDate] = useState(draw.date);
@@ -68,7 +78,7 @@ export const Draw: FC<DrawProps<EuroMillionsDraw>> = ({ draw, favorites, canEdit
     setStars([...draw.stars]);
     setSwissWin([...draw.swissWin]);
     setReadOnly(true);
-    if (!draw.lastUpdated) {
+    if (isNew) {
       setIsDeleting(true);
       await onDelete(draw);
       //setIsDeleting(false);
@@ -131,7 +141,7 @@ export const Draw: FC<DrawProps<EuroMillionsDraw>> = ({ draw, favorites, canEdit
       lists={lists}
       canEdit={canEdit}
       readOnly={readOnly || !canEdit}
-      isNew={!draw.lastUpdated}
+      isNew={isNew}
       onDateChange={handleDateChange}
       onEdit={handleEdit}
       onSave={handleSave}
